@@ -1,23 +1,11 @@
 import { Router } from 'express';
-import { eventRoutes } from './events';
-import { communityRoutes } from './communities';
-import { fanProfileRoutes } from './fanProfiles';
-import { localHelperRoutes } from './localHelpers';
-import { communityTripRoutes } from './communityTrips';
-import { adminConsoleRoutes } from './admin/console';
-import { adminAnalyticsRoutes } from './admin/analytics';
+import { recommendationRouter } from './recommendationRoutes';
+import { tripAssistantRouter } from './tripAssistantRoutes';
 
-const router = Router();
+export const apiRouter = Router();
 
-// Public + authenticated feature routes (already merged)
-router.use('/events', eventRoutes);
-router.use('/communities', communityRoutes);
-router.use('/fan-profiles', fanProfileRoutes);
-router.use('/local-helpers', localHelperRoutes);
-router.use('/community-trips', communityTripRoutes);
+// Existing routes preserved from main.
+apiRouter.use('/recommendations', recommendationRouter);
 
-// Admin console + analytics (this chunk)
-router.use('/admin/console', adminConsoleRoutes);
-router.use('/admin/analytics', adminAnalyticsRoutes);
-
-export { router };
+// Added by ai-trip-assistant chunk.
+apiRouter.use('/trip-assistant', tripAssistantRouter);
