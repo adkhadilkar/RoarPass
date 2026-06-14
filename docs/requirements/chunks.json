@@ -1,0 +1,297 @@
+{
+  "chunks": [
+    {
+      "id": 1,
+      "slug": "event-registry",
+      "title": "Event Registry & Configuration",
+      "prd_refs": [
+        "4",
+        "5.1",
+        "7.1",
+        "7.8.2"
+      ],
+      "summary": "Admin-configurable multi-event registry with sports, host cities/countries, schedules, participating teams, and activation logic that seeds communities.",
+      "dependencies": []
+    },
+    {
+      "id": 2,
+      "slug": "identity-onboarding",
+      "title": "User Identity, Onboarding & Roles",
+      "prd_refs": [
+        "5.3",
+        "6",
+        "7.2.1",
+        "7.2.2",
+        "7.2.3",
+        "9.2"
+      ],
+      "summary": "Persistent cross-event Fan Profile, registration via email/phone/OAuth, event activation, and multi-role selection.",
+      "dependencies": [
+        "event-registry"
+      ]
+    },
+    {
+      "id": 3,
+      "slug": "verification-trust-tiers",
+      "title": "Verification Tiers & Trust Signals",
+      "prd_refs": [
+        "7.2.4",
+        "7.10.1",
+        "5.3"
+      ],
+      "summary": "Tiered verification (Basic, Verified Identity, Local Helper, Business) with badges and cross-event reputation score.",
+      "dependencies": [
+        "identity-onboarding"
+      ]
+    },
+    {
+      "id": 4,
+      "slug": "country-communities",
+      "title": "Country & City Communities",
+      "prd_refs": [
+        "5.2",
+        "7.3.1",
+        "7.3.2",
+        "7.3.3"
+      ],
+      "summary": "Event-scoped country communities nested into city sub-communities and channels, including cross-country affinity communities and community features.",
+      "dependencies": [
+        "event-registry",
+        "identity-onboarding"
+      ]
+    },
+    {
+      "id": 5,
+      "slug": "community-moderation",
+      "title": "Community Moderation & Content Governance",
+      "prd_refs": [
+        "6.4",
+        "7.3.2",
+        "7.10.2",
+        "7.12.2",
+        "7.12.3"
+      ],
+      "summary": "Moderator roles, pinned guides, announcements, reporting/blocking, moderation queue with SLAs, auto-moderation, and audit logging.",
+      "dependencies": [
+        "country-communities",
+        "verification-trust-tiers"
+      ]
+    },
+    {
+      "id": 6,
+      "slug": "messaging-realtime",
+      "title": "Messaging & Real-Time Communications",
+      "prd_refs": [
+        "7.7.1",
+        "7.7.3",
+        "9.2"
+      ],
+      "summary": "1:1 encrypted DMs, group chat, threaded community channels, read-only announcements, match-day live chat, and voice notes with transcription.",
+      "dependencies": [
+        "identity-onboarding",
+        "country-communities"
+      ]
+    },
+    {
+      "id": 7,
+      "slug": "translation-layer",
+      "title": "In-App Translation & Phrase Cards",
+      "prd_refs": [
+        "7.7.2",
+        "7.10.5",
+        "8.6"
+      ],
+      "summary": "Auto-detect and one-tap non-destructive message translation plus emergency phrase cards via external translation API.",
+      "dependencies": [
+        "messaging-realtime"
+      ]
+    },
+    {
+      "id": 8,
+      "slug": "notifications",
+      "title": "Notifications & Alert Delivery",
+      "prd_refs": [
+        "7.7.4",
+        "7.8.3",
+        "9.2"
+      ],
+      "summary": "Push/SMS/email/in-app notifications for matches, trips, helpers, meetups, announcements, and safety/visa alerts with subscription controls.",
+      "dependencies": [
+        "identity-onboarding",
+        "event-registry"
+      ]
+    },
+    {
+      "id": 9,
+      "slug": "trip-itinerary",
+      "title": "Personal & Group Itinerary Planning",
+      "prd_refs": [
+        "5.5",
+        "7.5.1",
+        "7.5.2",
+        "7.5.4"
+      ],
+      "summary": "Personal itinerary builder, trip objects, shared group itineraries with coordination chat and voting, calendar/export, and offline access.",
+      "dependencies": [
+        "identity-onboarding",
+        "event-registry",
+        "messaging-realtime"
+      ]
+    },
+    {
+      "id": 10,
+      "slug": "intercity-coordination",
+      "title": "Intercity Trip Coordination",
+      "prd_refs": [
+        "7.5.3",
+        "7.4.1",
+        "7.8.4"
+      ],
+      "summary": "Origin\u2192destination route matching, shared travel groups, route tips, and border/visa reminders for multi-country events.",
+      "dependencies": [
+        "trip-itinerary",
+        "matching-engine"
+      ]
+    },
+    {
+      "id": 11,
+      "slug": "helper-network",
+      "title": "Local Helper Network",
+      "prd_refs": [
+        "5.4",
+        "6.2",
+        "7.6.1",
+        "7.6.2",
+        "7.6.3",
+        "7.6.4"
+      ],
+      "summary": "Helper profiles, offering categories, availability calendar, request/match/accept flow, ratings, and helper economics with paid offerings/commission.",
+      "dependencies": [
+        "verification-trust-tiers",
+        "messaging-realtime"
+      ]
+    },
+    {
+      "id": 12,
+      "slug": "matching-engine",
+      "title": "Smart Fan Matching & Discovery",
+      "prd_refs": [
+        "7.4.1",
+        "7.4.2",
+        "7.4.3",
+        "7.9.1",
+        "7.9.2"
+      ],
+      "summary": "Automatic fan/helper matching by city/dates/match/route/language with opt-in visibility controls and suggestion/discovery cards.",
+      "dependencies": [
+        "identity-onboarding",
+        "country-communities",
+        "helper-network",
+        "trip-itinerary"
+      ]
+    },
+    {
+      "id": 13,
+      "slug": "official-info-layer",
+      "title": "Official Information & Visa Intelligence",
+      "prd_refs": [
+        "7.8.1",
+        "7.8.2",
+        "7.8.4"
+      ],
+      "summary": "Per-event/per-city guides, match/schedule feed with timezone conversion, and visa/entry intelligence with official portal links.",
+      "dependencies": [
+        "event-registry",
+        "country-communities"
+      ]
+    },
+    {
+      "id": 14,
+      "slug": "safety-trust-system",
+      "title": "Safety Modes, Meetup Safety & SOS",
+      "prd_refs": [
+        "7.10.2",
+        "7.10.3",
+        "7.10.4",
+        "7.10.5"
+      ],
+      "summary": "Meetup check-in/out, trusted contacts, Solo/Women/Family/Accessibility modes, location sharing, and always-visible Emergency SOS.",
+      "dependencies": [
+        "identity-onboarding",
+        "helper-network",
+        "trip-itinerary"
+      ]
+    },
+    {
+      "id": 15,
+      "slug": "business-partner-portal",
+      "title": "Business Partner Portal",
+      "prd_refs": [
+        "6.5",
+        "7.11.1",
+        "7.11.2",
+        "7.11.3"
+      ],
+      "summary": "Verified business listings, native-language menus, sponsored placement, fan discounts, group booking, and partner categories.",
+      "dependencies": [
+        "verification-trust-tiers",
+        "country-communities"
+      ]
+    },
+    {
+      "id": 16,
+      "slug": "admin-console-analytics",
+      "title": "Admin Console & Analytics Dashboard",
+      "prd_refs": [
+        "6.6",
+        "7.12.1",
+        "7.12.2",
+        "7.12.3",
+        "7.12.4",
+        "9.2"
+      ],
+      "summary": "Admin event/community/user/trust management plus analytics dashboards for usage, trips, helpers, incidents, and retention.",
+      "dependencies": [
+        "event-registry",
+        "community-moderation",
+        "helper-network",
+        "business-partner-portal"
+      ]
+    },
+    {
+      "id": 17,
+      "slug": "ai-trip-assistant",
+      "title": "AI Trip Assistant",
+      "prd_refs": [
+        "7.9.3"
+      ],
+      "summary": "LLM-powered conversational assistant aware of schedule, cities, preferences, helper availability, and itinerary for route/timing suggestions.",
+      "dependencies": [
+        "trip-itinerary",
+        "intercity-coordination",
+        "helper-network",
+        "matching-engine"
+      ]
+    },
+    {
+      "id": 18,
+      "slug": "platform-foundation-nfr",
+      "title": "Platform Foundation, Security & Compliance",
+      "prd_refs": [
+        "8.1",
+        "8.2",
+        "8.3",
+        "8.4",
+        "8.5",
+        "8.6",
+        "8.7",
+        "9.1",
+        "9.3",
+        "9.4",
+        "9.5"
+      ],
+      "summary": "Cross-cutting multi-region cloud architecture, performance/scalability, security, GDPR/CCPA/PDPA privacy, i18n/RTL, and WCAG 2.1 AA accessibility foundations.",
+      "dependencies": []
+    }
+  ]
+}
