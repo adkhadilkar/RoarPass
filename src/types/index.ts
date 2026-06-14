@@ -1,71 +1,90 @@
-// Shared domain contracts — RoarPass core concepts
-// Merged: identity-onboarding adds FanProfile + onboarding/auth types
-// alongside existing Event / CountryCommunity / LocalHelper / CommunityTrip.
+// Shared domain contracts for RoarPass
+// Merged: main (Event, CountryCommunity, FanProfile) + safety-trust-system additions
+
+export type ID = string;
 
 export interface Event {
-  id: string;
-  name: string;
-  startDate: string; // ISO 8601
-  endDate: string;   // ISO 8601
-  hostCountryCode: string; // ISO 3166-1 alpha-2
-  venues: string[];
+  id: ID;
+  title: string;
+  startsAt: string; // ISO-8601
+  endsAt: string;   // ISO-8601
+  countryCode: string; // ISO-3166-1 alpha-2
+  venue?: string;
 }
 
 export interface CountryCommunity {
-  id: string;
-  countryCode: string; // ISO 3166-1 alpha-2
-  displayName: string;
+  id: ID;
+  countryCode: string; // ISO-3166-1 alpha-2
+  name: string;
   memberCount: number;
 }
 
+export interface FanProfile {
+  id: ID;
+  displayName: string;
+  homeCountryCode: string;
+  locale: string;
+  // safety-trust-system additions
+  trustLevel: TrustLevel;
+  isVerified: boolean;
+}
+
 export interface LocalHelper {
-  id: string;
-  fanProfileId: string;
+  id: ID;
+  fanProfileId: ID;
   countryCode: string;
-  languages: string[]; // BCP-47 tags
-  verified: boolean;
+  languages: string[];
+  // safety-trust-system additions
+  trustLevel: TrustLevel;
+  backgroundCheckStatus: BackgroundCheckStatus;
 }
 
 export interface CommunityTrip {
-  id: string;
-  countryCommunityId: string;
-  eventId: string;
-  title: string;
-  startDate: string;
-  endDate: string;
+  id: ID;
+  eventId: ID;
+  countryCommunityId: ID;
+  organizerFanProfileId: ID;
+  participantFanProfileIds: ID[];
 }
 
-// --- identity-onboarding additions ---
+/* ===== safety-trust-system contracts ===== */
 
-export type AuthProvider = 'email' | 'apple' | 'google';
-
-export interface FanProfile {
-  id: string;
-  displayName: string;
-  countryCode: string;          // ISO 3166-1 alpha-2, home country
-  preferredLanguage: string;    // BCP-47
-  authProvider: AuthProvider;
-  consent: ConsentRecord;       // GDPR/CCPA consent state
-  createdAt: string;            // ISO 8601
-  onboardingComplete: boolean;
+export enum TrustLevel {
+  New = 'new',
+  Established = 'established',
+  Trusted = 'trusted',
+  Ambassador = 'ambassador',
 }
 
-export interface ConsentRecord {
-  marketingOptIn: boolean;
-  dataProcessingAcceptedAt: string | null; // ISO 8601, null until accepted
-  policyVersion: string;
+export enum BackgroundCheckStatus {
+  NotStarted = 'not_started',
+  Pending = 'pending',
+  Cleared = 'cleared',
+  Failed = 'failed',
 }
 
-export interface OnboardingState {
-  fanProfileId: string;
-  step: OnboardingStep;
-  completedSteps: OnboardingStep[];
+export type ReportReason =
+  | 'harassment'
+  | 'spam'
+  | 'impersonation'
+  | 'unsafe_behavior'
+  | 'other';
+
+export interface SafetyReport {
+  id: ID;
+  reporterFanProfileId: ID;
+  reportedFanProfileId: ID;
+  contextType: 'event' | 'trip' | 'community' | 'message';
+  contextId: ID;
+  reason: ReportReason;
+  details?: string;
+  createdAt: string; // ISO-8601
+  status: 'open' | 'reviewing' | 'resolved' | 'dismissed';
 }
 
-export type OnboardingStep =
-  | 'welcome'
-  | 'auth'
-  | 'profile'
-  | 'country-community'
-  | 'consent'
-  | 'done';
+export interface BlockRecord {
+  id: ID;
+  blockerFanProfileId: ID;
+  blockedFanProfileId: ID;
+  createdAt: string; // ISO-8601
+}

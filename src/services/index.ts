@@ -1,6 +1,5 @@
-// Shared service registry — both intents preserved:
-// main HEAD registered profile + event services; matching-engine adds matching services.
-export * from './profile';
-export * from './event';
-export * from './country-community';
-export * from './matching';
+// Service barrel — merged main exports with safety-trust-system service
+export * from './eventService';
+export * from './communityService';
+export * from './tripService';
+export * from './safetyService';
