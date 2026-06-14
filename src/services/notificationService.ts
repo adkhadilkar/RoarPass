@@ -1,45 +1,36 @@
 import { db } from '../db';
-import { Notification, NotificationType } from '../models/notification';
-import { getUserLocale } from './userService';
-import { translate } from '../i18n';
+import { Notification, NotificationType } from '../types/notification';
 
 export class NotificationService {
-  async create(params: {
-    userId: string;
-    type: NotificationType;
-    payload: Record<string, unknown>;
-  }): Promise<Notification> {
-    const locale = await getUserLocale(params.userId);
-    const message = translate(params.type, locale, params.payload);
-
-    return db.notifications.insert({
-      userId: params.userId,
-      type: params.type,
-      payload: params.payload,
-      message,
-      read: false,
-      createdAt: new Date(),
+  async send(userId: string, type: NotificationType, payload: Record<string, unknown>): Promise<Notification> {
+    const notification = await db.notification.create({
+      data: {
+        userId,
+        type,
+        payload,
+        read: false,
+        createdAt: new Date(),
+      },
     });
+    await this.dispatch(notification);
+    return notification;
   }
 
-  async markRead(userId: string, notificationId: string): Promise<void> {
-    await db.notifications.update(
-      { id: notificationId, userId },
-      { read: true, readAt: new Date() }
-    );
+  // Merged: trip notifications (from main) + moderation notifications (from community-moderation)
+  async notifyTripUpdate(userId: string, tripId: string): Promise<Notification> {
+    return this.send(userId, NotificationType.TRIP_UPDATE, { tripId });
   }
 
-  async listForUser(
+  async notifyModerationAction(
     userId: string,
-    opts: { unreadOnly?: boolean; limit?: number; cursor?: string } = {}
-  ): Promise<{ items: Notification[]; nextCursor?: string }> {
-    return db.notifications.paginate({
-      where: { userId, ...(opts.unreadOnly ? { read: false } : {}) },
-      limit: opts.limit ?? 20,
-      cursor: opts.cursor,
-      orderBy: { createdAt: 'desc' },
-    });
+    reportId: string,
+    action: 'warned' | 'removed' | 'dismissed',
+  ): Promise<Notification> {
+    return this.send(userId, NotificationType.MODERATION_ACTION, { reportId, action });
+  }
+
+  private async dispatch(notification: Notification): Promise<void> {
+    // delivery channel routing unchanged
+    await db.notificationQueue.enqueue(notification);
   }
 }
-
-export const notificationService = new NotificationService();

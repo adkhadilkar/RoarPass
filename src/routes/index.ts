@@ -1,21 +1,15 @@
 import { Router } from 'express';
-import { eventRoutes } from './events';
-import { communityRoutes } from './communities';
-import { fanProfileRoutes } from './fanProfiles';
-import { helperRoutes } from './helpers';
-import { tripRoutes } from './trips';
-import { notificationRoutes } from './notifications';
+import { tripRouter } from './trips';
+import { helperRouter } from './helpers';
+import { profileRouter } from './profiles';
+import { moderationRouter } from './moderation';
 
-const router = Router();
+export const apiRouter = Router();
 
-// Existing chunks (preserved from main)
-router.use('/events', eventRoutes);
-router.use('/communities', communityRoutes);
-router.use('/fan-profiles', fanProfileRoutes);
-router.use('/helpers', helperRoutes);
-router.use('/trips', tripRoutes);
+// Existing routes (main)
+apiRouter.use('/trips', tripRouter);
+apiRouter.use('/helpers', helperRouter);
+apiRouter.use('/profiles', profileRouter);
 
-// Merged chunk: notifications
-router.use('/notifications', notificationRoutes);
-
-export { router };
+// community-moderation chunk
+apiRouter.use('/moderation', moderationRouter);

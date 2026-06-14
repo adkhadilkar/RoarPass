@@ -1,2 +1,3 @@
-export * from "./types/platform";
-export * from "./constants/locales";
+// Re-export moderation types so downstream packages can import from '@roarpass/shared'
+export * from './types/moderation';
+export * from './utils/moderation';
