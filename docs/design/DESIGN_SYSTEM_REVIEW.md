@@ -1,122 +1,110 @@
 # RoarPass — Design System & Whole-Product Coherence Review
 
-**Phase 2, Stage 4 — System Reviewer**
-**Scope:** 36 pages (P01–P36) + 10 shared components (C01–C10) + design tokens
-**Result:** Conditional sign-off withheld — see blocking system issues below.
+**Phase 2, Stage 4 — Design System Reviewer**
+**Scope:** 36 pages/flows (P01–P36) + 10 shared components (C01–C10) + tokens
+**Verdict:** Conditional — sign-off withheld pending resolution of high-severity system issues (see JSON).
 
 ---
 
 ## 1. Information Architecture & Navigation
 
-### 1.1 Primary Navigation (C01 App Shell)
-The app shell defines the spine for all authenticated pages. Verified that the following top-level destinations resolve to real pages:
+### 1.1 Primary navigation (C01 App Shell)
+The product spans seven functional clusters: Onboarding, Communities/Messaging, Discovery/Matching,
+Trips, Helpers, Safety, and Business/Admin. C01 must expose a coherent primary nav that does not
+exceed 5 top-level destinations on mobile (per platform-foundation-nfr:8.7). The current page set
+implies **7+ logical top-level areas**, which cannot all live in a mobile tab bar.
 
-| Nav Destination | Target Page | Status |
-|---|---|---|
-| Home / Event Hub | P06 home-dashboard | OK |
-| Communities | P07 → P08 → P09 | OK |
-| Messages | P10 direct-messages (+ P11 live chat contextual) | OK |
-| Discover (Matching) | P12 smart-match-discovery | OK |
-| Trips | P14 trip-builder (hub for P15, P16) | OK |
-| Helpers | P17 helper-directory | OK |
-| Info | P20 official-info-guides | OK |
-| Safety | P21 safety-modes | OK |
-| Notifications | P26 notifications-center | OK |
-| Settings | P25, P36, P13 (nested) | OK |
+**Recommended canonical IA:**
+- **Tab bar (mobile, 5 slots):** Home (P06) · Communities (P07→P08→P09) · Discover (P12 + P17 + P31) · Trips (P14) · Messages (P10).
+- **Persistent overlays:** SOS FAB (C09), Language Switcher (C08) in header.
+- **Drawer / "More":** Verification (P05), Safety (P21), Official Info (P20), Notifications (P26), Settings (P36), AI Assistant entry (P27), Helper Mode (P19).
+- **Desktop:** left rail mirrors the same hierarchy with the drawer items promoted to a secondary nav group.
 
-**FINDING (medium):** That is 9–10 primary destinations — exceeds the comfortable 5-tab mobile bottom-nav ceiling. C01 must define an explicit mobile pattern (5 primary tabs + "More" drawer) versus the desktop left-rail. Several refiners placed entry points differently; the shell must be the single source of truth.
+Without an explicit nav home for **Discover**, three discrete discovery surfaces (fan matching P12,
+helper directory P17, business discovery P31) are effectively orphaned — each reachable only by deep
+link. This is the single biggest IA risk and is flagged high.
 
-### 1.2 Cross-Cutting Overlays
-- **C09 sos-fab** must render on every authenticated screen at a fixed position. Verified intent in P21/P22/P23; must confirm C09 is mounted at the shell layer (C01), NOT per-page, to avoid duplication and z-index conflicts with C07 alert-banner and C28 premium gate.
-- **C08 language-switcher** appears in onboarding (P01–P04) AND settings (P25). Confirm a single component instance with consistent placement (shell header on desktop, settings + onboarding header on mobile).
+### 1.2 Entry points that lack a parent
+- **P16 Intercity Routes** — should be reachable from Trips (P14/P15), not a standalone destination.
+- **P22 Meetup Check-In/Out** — should launch from a meetup/trip context or a match thread, not nav.
+- **P24 Phrase Cards** & **P25 Translation Preferences** — belong under Safety (P21) and Settings (P36) respectively; confirm both have a nav parent.
+- **P13 Match Visibility Settings** — must be reachable from both P12 and P36 (Settings) for discoverability.
+- **P28 AI Premium Gate** & **P23 SOS Overlay** are correctly modeled as components/overlays (no nav slot needed).
 
----
-
-## 2. Orphan & Reachability Audit
-
-Walked every page for at least one inbound entry point:
-
-- **P05 verification-center** — reachable from C02 trust-badge tap, P06 dashboard prompt, P18 helper request. OK.
-- **P13 match-visibility-settings** — reachable from P12 and P36. OK.
-- **P16 intercity-routes** — reachable from P14/P15. OK.
-- **P19 helper-management** — gated behind P03 role-selection (Helper role). Confirm dashboard (P06) surfaces a "Helper Mode" switch only when the role is active. OK with condition.
-- **P24 phrase-cards** — reachable from P23 SOS overlay and P20 info. OK.
-- **P28 ai-assistant-premium-gate** — component invoked from P27. OK.
-- **P29–P31 business portal** — P29/P30 are partner-role contexts; P31 is fan-facing under Discover/Info. Confirm partner portal is a distinct authenticated context, not buried in fan nav.
-
-**FINDING (high):** **P35 admin-phrase-library and the entire admin cluster (P32–P34) have no defined transition INTO them from the fan/partner shell — which is correct (separate console) — but no page defines the admin shell itself.** C01 is described for the consumer app only. Admin pages (P32–P35, desktop-only) reference no shared navigation component. Risk: 4 desktop admin screens with inconsistent, ad-hoc chrome. Needs a shared admin-shell decision.
+### 1.3 Role-gated areas
+P19 (Helper Mode), P29/P30 (Business Portal), P32–P35 (Admin) are role-conditional per
+identity-onboarding:6 multi-role model. Nav must render these conditionally based on active role
+and provide a clear **role switcher**. No page in the set owns the role-switch affordance — it must
+live in C01. Flagged medium.
 
 ---
 
-## 3. Desktop / Mobile Parity
+## 2. Shared Component Reuse Audit
 
-- P32–P35 are desktop-only by spec (admin) — acceptable, no mobile parity required.
-- All other pages declare both viewports. Spot-checked parity concerns:
-  - **P09 community-channel / P10 / P11** threaded messaging: desktop uses 3-pane (list/thread/detail); mobile must collapse to push-navigation stack. Confirm C03 message-bubble translation overlay (tap-to-reveal) works on both — desktop hover vs mobile tap divergence must be reconciled.
-  - **P12 / C04 fan-match-card:** desktop grid vs mobile swipe-deck. Both are valid but must share C04; verify the card does not fork into two components.
-  - **P29/P34 dashboards:** dense data tables/charts need a defined mobile reflow (P34 is desktop-only so OK; P29 is dual-viewport — confirm chart reflow).
+| Component | Expected consumers | Coverage notes |
+|-----------|-------------------|----------------|
+| C02 Trust Badge | P05, P12, P17, P18, P19, C04, C05 | Must be the **single** source of tier rendering; verify P05 doesn't fork its own badge styling. |
+| C03 Message Bubble + translation overlay | P09, P10, P11, P15(coord), P27 | AI assistant (P27) and group itinerary chat (P15) must reuse C03, not bespoke bubbles. |
+| C04 Fan Match Card | P12, P06(hub teaser) | OK |
+| C05 Helper Card | P17, P06, P31(adjacent) | Verify P31 uses a distinct business card, not C05. |
+| C06 Trip Object Card | P14, P15, P16, P27(AI suggestions render into) | C10 AI Suggestion Card must convert into C06 on accept — confirm shared schema. |
+| C07 Alert Banner | P06, P08, P20, P21, P26, host-city-wide | OK; ensure single severity scale. |
+| C08 Language Switcher / RTL | global header | Must appear on **every** authenticated page incl. admin (P32–P35). |
+| C09 SOS FAB | every authenticated fan-facing page | **Must NOT appear** on admin/business desktop-only consoles; confirm exclusion rule. |
+| C10 AI Suggestion Card | P27, P14, P16 | Depends on premium gate (P28) state. |
 
-**FINDING (medium):** C03 translation-overlay interaction (hover vs tap) is not unified. Mandate tap/click-to-toggle on BOTH viewports for accessibility (WCAG 2.1 AA — hover-only content fails 1.4.13).
-
----
-
-## 4. Shared Component Reuse Verification
-
-| Component | Must appear in | Reuse confirmed |
-|---|---|---|
-| C02 trust-badge | P05, P12, P17, P18, P19, C04, C05 | Verify no page renders an inline badge variant |
-| C03 message-bubble | P09, P10, P11, P15 | OK — single source |
-| C04 fan-match-card | P12, P06 (suggestions) | OK |
-| C05 helper-card | P17, P06, P16 | OK |
-| C06 trip-object-card | P14, P15, P16, P27 (AI output) | OK |
-| C07 alert-banner | P06, P16, P20, P21, P26 | OK |
-| C10 ai-suggestion-card | P27, P14 (inline AI) | OK |
-
-**FINDING (medium):** C02 trust-badge tier taxonomy (verification-trust-tiers:7.10.1) must be byte-identical everywhere — same tier names, colors, icons. Refiners for P05, P17, P18 each described tiers; reconcile to one canonical tier list and token-driven colors (no per-page hex).
-
-**FINDING (low):** C06 trip-object-card is reused inside AI assistant output (P27/C10). Confirm C10 ai-suggestion-card composes C06 rather than re-rendering trip items, to keep "add to trip" affordance consistent.
+**Finding:** C03's translation overlay (REQ-TRANS-03/09) and C08's RTL toggle (translation-layer:7.4)
+must share one i18n/direction context. If P09/P10/P11 each manage direction independently, RTL parity
+breaks. Flagged high — RTL must be a single app-level concern propagated through C01.
 
 ---
 
-## 5. End-to-End Flow Sanity
+## 3. End-to-End Flow Sanity
 
-Traced critical journeys:
-
-1. **First-run:** P01 → P02 → P03 → P04 → P06. Coherent. Confirm a user can activate an event (P04) before/after profile (P02) — order must be locked by the shell, not assumed per-page.
-2. **Meet a fan safely:** P12 → match → P10 DM → P22 meetup check-in → (C09 SOS available). Coherent. Verify P22 check-in surfaces C07 alert-banner state on P06.
-3. **Plan & coordinate a trip:** P14 → P15 (group) → P16 (intercity) → P27 (AI assist) → P28 (premium gate). Coherent. P27 outputs must write back to P14 via C06.
-4. **Get local help:** P17 → P18 (request flow) → P10 DM → P22. Coherent.
-5. **Language/safety in-field:** any screen → C09 → P23 → P24. Coherent.
-
-**FINDING (medium):** Premium gate (P28) is reachable from P27 but the upgrade/entitlement state has no defined global home. After upgrade, what reflects the new entitlement across P27, P12 (advanced matching?), and helper features? Needs a single entitlement indicator (likely in C01 header / P36). Flagging as system-level coherence gap, not a page bug.
-
----
-
-## 6. Consistency of RoarPass Core Concepts
-
-Verified the five core concepts render with consistent vocabulary across pages:
-- **Event** (P04, P06, P32) — consistent "Activated Event" framing. OK.
-- **Country/City Community** (P07, P08, P09) — consistent. OK.
-- **Fan Profile** (P02, P12, P36) — consistent. OK.
-- **Local Helper** (P17–P19, C05) — consistent. OK.
-- **Community Trip** (P14–P16, C06) — **terminology drift risk:** "Trip" vs "Itinerary" vs "Community Trip" used across P14/P15/P16. Standardize: personal = "Itinerary", shared = "Community Trip".
-
-**FINDING (medium):** Lock trip terminology in the glossary; update P14/P15/P16/C06 labels.
+1. **Onboarding → Activation:** P01→P02→P03→P04→P06. Coherent. Confirm P03 role selection feeds the
+   conditional nav in §1.3 and P04 host-city selection seeds language defaults consumed by C08/P25.
+2. **Discover a fan → meet safely:** P12→C04→P10(DM)→P22(meetup check-in)→C09/P23 fallback. Coherent,
+   but the hop from a match card to a *safe meetup* relies on P22 being launchable from a DM thread —
+   currently P22 is typed `flow` with no documented entry from P10. Flagged medium.
+3. **Plan a trip:** P14→P15(share)→P16(intercity)→C10/P27(AI augment)→P20(visa/official). The AI
+   assistant (P27) and trip builder (P14) must write to the same Trip Object model (C06). Confirm.
+4. **Get help locally:** P17→P05(trust filter)→P18(request)→P10(coordinate). C05↔C02 dependency holds.
+5. **Business:** P29→P30→(publishes to)→P31. One-directional publish flow is sound.
+6. **Admin moderation:** P08/P09 reports → P33 queue → audit log. Community-moderation:7.3.2 reporting
+   affordance must exist inside C03/P09; verify the report action is present on the message bubble.
 
 ---
 
-## 7. Tokens, i18n/RTL, Accessibility (cross-page)
+## 4. Desktop / Mobile Parity
 
-- **RTL:** C08 toggles RTL. Confirm all flow pages (P01–P04, P14, P18, P22, P30) mirror correctly; directional icons (back/next, route arrows in P16) must use logical properties. Spot risk in P16 intercity route visualization.
-- **Color/contrast:** trust-badge and alert-banner colors must pass AA from tokens; no per-page overrides (ties to §4 finding).
-- **SOS (C09/P23):** must remain reachable and AA-contrast in both LTR/RTL and dark mode; emergency text (REQ-TRANS-14) must be pre-translated, not live-MT-dependent.
+- P32–P35 are **desktop-only** by spec — acceptable for admin, but ensure graceful "open on desktop"
+  messaging if reached on mobile rather than a broken layout.
+- All fan-facing pages declare both viewports. Highest-risk responsive screens: P09/P11 (live chat
+  density), P16 (route/map), P34 (data viz). Confirm refiners specified mobile reflow for each.
+- SOS FAB (C09) placement must not collide with mobile tab bar (C01) or RTL mirrored layouts.
 
 ---
 
-## 8. Summary of Blocking vs Non-Blocking
+## 5. Consistency of Core Concepts
 
-- **Blocking (high):** Admin shell undefined for P32–P35 (§2).
-- **Should-fix before sign-off (medium):** mobile nav ceiling/More-drawer (§1.1); C03 hover-vs-tap (§3); trust-badge canonical taxonomy (§4); entitlement global indicator (§5); trip terminology (§6).
-- **Non-blocking (low):** C10 composing C06 (§4).
+Event, Country Community, Fan Profile, Local Helper, Community Trip are represented across P04/P06,
+P07–P09, P02, P17–P19, and P14–P16 respectively. Terminology is consistent in titles. One risk:
+"Trip" appears as both *Personal Itinerary* (P14) and *Community Trip* (P15/P16) — ensure copy and
+C06 visually distinguish personal vs. shared/community trip objects to avoid user confusion. Medium.
 
-**Sign-off withheld** pending the one high-severity structural gap (admin shell) and confirmation of the shared-component canonicalization items.
+---
+
+## 6. Token & Visual Consistency
+- Single trust-tier color scale must be token-driven and consumed only via C02.
+- Alert severity (C07) and trust tiers (C02) must use **distinct** palettes to avoid semantic
+  collision (e.g., green "verified" vs green "all-clear").
+- RTL: directional tokens (start/end vs left/right) required across all components; confirm tokens
+  expose logical properties.
+
+---
+
+## 7. Summary
+The page inventory is comprehensive and requirement-traceable. Coherence blockers are concentrated
+in (a) the missing **Discover** nav home leaving three surfaces orphaned, (b) **RTL/i18n** needing a
+single app-level context, and (c) under-specified cross-flow entry points (P22, P16, role switcher).
+Resolve the high-severity items and re-submit for sign-off.

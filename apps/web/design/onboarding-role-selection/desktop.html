@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RoarPass — Onboarding: Choose Your Role (Desktop)</title>
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────────── */
+    :root {
+      --color-brand-primary:    #E8320A;
+      --color-brand-secondary:  #F5A623;
+      --color-brand-accent:     #1A1A2E;
+      --color-surface-base:     #0D0D1A;
+      --color-surface-card:     #161628;
+      --color-surface-elevated: #1E1E35;
+      --color-border-subtle:    rgba(255,255,255,0.08);
+      --color-border-focus:     #E8320A;
+      --color-text-primary:     #FFFFFF;
+      --color-text-secondary:   #A8A8C0;
+      --color-text-muted:       #606080;
+      --color-success:          #22C55E;
+      --color-warning:          #F5A623;
+      --color-error:            #EF4444;
+
+      --font-display:  'Georgia', 'Times New Roman', serif;
+      --font-body:     'Helvetica Neue', Arial, sans-serif;
+
+      --radius-sm:  6px;
+      --radius-md:  12px;
+      --radius-lg:  20px;
+      --radius-xl:  32px;
+
+      --shadow-card:     0 4px 24px rgba(0,0,0,0.45);
+      --shadow-selected: 0 0 0 3px #E8320A, 0 8px 32px rgba(232,50,10,0.35);
+
+      --transition-fast:   150ms ease;
+      --transition-normal: 280ms cubic-bezier(0.4,0,0.2,1);
+
+      --space-xs:  4px;
+      --space-sm:  8px;
+      --space-md:  16px;
+      --space-lg:  24px;
+      --space-xl:  40px;
+      --space-2xl: 64px;
+    }
+
+    /* ─── Reset ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--color-surface-base);
+      color: var(--color-text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    button { cursor: pointer; border: none; background: none; font: inherit; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── Background ─────────────────────────────────────────────── */
+    .page-bg {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 900px 600px at 80% 10%, rgba(232,50,10,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 700px 500px at 10% 80%, rgba(245,166,35,0.08) 0%, transparent 70%),
+        var(--color-surface-base);
+    }
+    .page-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,0.02) 80px),
+        repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,0.02) 80px);
+    }
+
+    /* ─── Layout Shell ───────────────────────────────────────────── */
+    .shell {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    /* ─── Top Bar ────────────────────────────────────────────────── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-lg) var(--space-2xl);
+      border-bottom: 1px solid var(--color-border-subtle);
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      display: flex; align-items: center; gap: var(--space-sm);
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--color-brand-primary);
+      border-radius: var(--radius-sm);
+      display: grid; place-items: center;
+      font-size: 20px;
+    }
+    .logo-wordmark {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--color-text-primary);
+    }
+    .logo-wordmark span { color: var(--color-brand-primary); }
+
+    .topbar-meta {
+      display: flex; align-items: center; gap: var(--space-lg);
+    }
+    .topbar-step {
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .topbar-lang {
+      display: flex; align-items: center; gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: border-color var(--transition-fast);
+    }
+    .topbar-lang:hover { border-color: var(--color-brand-primary); }
+
+    /* ─── Progress Strip ──────────────────────────────────────────── */
+    .progress-strip {
+      display: flex;
+      gap: 4px;
+      padding: 0 var(--space-2xl);
+      margin-top: -1px;
+    }
+    .progress-strip__step {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--color-border-subtle);
+      transition: background var(--transition-normal);
+    }
+    .progress-strip__step.done { background: var(--color-brand-primary); }
+    .progress-strip__step.active { background: var(--color-brand-secondary); }
+
+    /* ─── Main Content ───────────────────────────────────────────── */
+    .main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-2xl) var(--space-xl);
+    }
+
+    .flow-header {
+      text-align: center;
+      max-width: 620px;
+      margin-bottom: var(--space-xl);
+    }
+    .flow-eyebrow {
+      display: inline-flex; align-items: center; gap: var(--space-xs);
+      background: rgba(232,50,10,0.12);
+      border: 1px solid rgba(232,50,10,0.3);
+      border-radius: 999px;
+      padding: var(--space-xs) var(--space-md);
+      font-size: 0.78rem;
+      color: var(--color-brand-primary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-md);
+      font-weight: 600;
+    }
+    .flow-title {
+      font-family: var(--font-display);
+      font-size: 2.6rem;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-md);
+    }
+    .flow-title em {
+      font-style: normal;
+      color: var(--color-brand-primary);
+    }
+    .flow-subtitle {
+      font-size: 1.05rem;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ─── Multi-select hint ──────────────────────────────────────── */
+    .multiselect-hint {
+      display: flex; align-items: center; gap: var(--space-sm);
+      margin-bottom: var(--space-xl);
+      background: rgba(245,166,35,0.08);
+      border: 1px solid rgba(245,166,35,0.2);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+      font-size: 0.85rem;
+      color: var(--color-brand-secondary);
+    }
+    .multiselect-hint svg { flex-shrink: 0; }
+
+    /* ─── Role Cards Grid ────────────────────────────────────────── */
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+      width: 100%;
+      max-width: 1000px;
+      margin-bottom: var(--space-xl);
+    }
+
+    .role-card {
+      position: relative;
+      background: var(--color-surface-card);
+      border: 2px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl) var(--space-lg);
+      cursor: pointer;
+      transition: border-color var(--transition-normal), box-shadow var(--transition-normal), transform var(--transition-normal), background var(--transition-normal);
+      outline: none;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .role-card:hover {
+      border-color: rgba(232,50,10,0.4);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card);
+    }
+    .role-card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(232,50,10,0.6);
+      border-color: var(--color-brand-primary);
+    }
+    .role-card.selected {
+      border-color: var(--color-brand-primary);
+      box-shadow: var(--shadow-selected);
+      background: var(--color-surface-elevated);
+    }
+    .role-card.selected .role-card__check { opacity: 1; transform: scale(1); }
+
+    /* Check badge */
+    .role-card__check {
+      position: absolute;
+      top: var(--space-md);
+      right: var(--space-md);
+      width: 28px; height: 28px;
+      background: var(--color-brand-primary);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: opacity var(--transition-normal), transform var(--transition-normal);
+    }
+
+    /* Icon blob */
+    .role-card__icon-wrap {
+      width: 64px; height: 64px;
+      border-radius: var(--radius-md);
+      display: grid; place-items: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    /* Fan */
+    .role-card--fan .role-card__icon-wrap { background: rgba(232,50,10,0.15); }
+    .role-card--fan.selected .role-card__icon-wrap { background: rgba(232,50,10,0.25); }
+
+    /* Local Helper */
+    .role-card--helper .role-card__icon-wrap { background: rgba(245,166,35,0.15); }
+    .role-card--helper.selected .role-card__icon-wrap { background: rgba(245,166,35,0.25); }
+
+    /* Organiser */
+    .role-card--organiser .role-card__icon-wrap { background: rgba(34,197,94,0.12); }
+    .role-card--organiser.selected .role-card__icon-wrap { background: rgba(34,197,94,0.22); }
+
+    .role-card__label {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--color-text-primary);
+    }
+    .role-card__desc {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      line-height: 1.55;
+      flex: 1;
+    }
+    .role-card__perks {
+      display: flex; flex-direction: column; gap: var(--space-xs);
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--color-border-subtle);
+    }
+    .perk {
+      display: flex; align-items: center; gap: var(--space-xs);
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+    .perk svg { flex-shrink: 0; }
+    .role-card.selected .perk { color: var(--color-text-secondary); }
+
+    /* Popular badge */
+    .role-card__badge {
+      position: absolute;
+      top: -12px; left: var(--space-lg);
+      background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-secondary));
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    /* ─── Action Row ─────────────────────────────────────────────── */
+    .action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1000px;
+      gap: var(--space-lg);
+    }
+    .selection-tally {
+      font-size: 0.88rem;
+      color: var(--color-text-secondary);
+    }
+    .selection-tally strong { color: var(--color-brand-secondary); }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: var(--color-brand-primary);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+      min-height: 52px;
+      letter-spacing: 0.01em;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #c9280a;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(232,50,10,0.45);
+    }
+    .btn-primary:active:not(:disabled) { transform: translateY(0); }
+    .btn-primary:focus-visible { box-shadow: 0 0 0 3px rgba(232,50,10,0.55); outline: none; }
+    .btn-primary:disabled {
+      background: var(--color-surface-elevated);
+      color: var(--color-text-muted);
+      cursor: not-allowed;
+    }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: var(--space-xs);
+      color: var(--color-text-secondary);
+      font-size: 0.9rem;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border-subtle);
+      transition: border-color var(--transition-fast), color var(--transition-fast);
+      min-height: 44px;
+    }
+    .btn-ghost:hover { border-color: var(--color-text-muted); color: var(--color-text-primary); }
+
+    /* ─── Footer ─────────────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      padding: var(--space-lg) var(--space-2xl);
+      border-top: 1px solid var(--color-border-subtle);
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-lg);
+    }
+    .footer a:hover { color: var(--color-text-secondary); }
+
+    /* ─── Screen label watermark ────────────────────────────────── */
+    .screen-label {
+      position: fixed;
+      top: var(--space-sm);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(232,50,10,0.85);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 999px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    /* ─── Accessibility ──────────────────────────────────────────── */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Screen ID watermark -->
+<div class="screen-label">P03 · Desktop · Onboarding — Role Selection</div>
+
+<!-- Background -->
+<div class="page-bg" aria-hidden="true"></div>
+
+<div class="shell">
+
+  <!-- Top Bar -->
+  <header class="topbar" role="banner">
+    <div class="logo">
+      <div class="logo-icon" aria-hidden="true">🦁</div>
+      <div class="logo-wordmark">Roar<span>Pass</span></div>
+    </div>
+    <div class="topbar-meta">
+      <span class="topbar-step">Step 2 of 5 — Your Identity</span>
+      <button class="topbar-lang" aria-label="Change language">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        EN
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Progress strip -->
+  <div class="progress-strip" role="progressbar" aria-valuenow="2" aria-valuemin="1" aria-valuemax="5" aria-label="Onboarding progress: step 2 of 5">
+    <div class="progress-strip__step done"></div>
+    <div class="progress-strip__step active"></div>
+    <div class="progress-strip__step"></div>
+    <div class="progress-strip__step"></div>
+    <div class="progress-strip__step"></div>
+  </div>
+
+  <!-- Main -->
+  <main class="main" id="main-content">
+
+    <!-- Header -->
+    <div class="flow-header">
+      <div class="flow-eyebrow" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        FIFA World Cup 2026
+      </div>
+      <h1 class="flow-title">Who will you be<br>at <em>the World Cup?</em></h1>
+      <p class="flow-subtitle">
+        Choose one or more roles — your experience is tailored to all of them.
+        You can always change this later in your profile settings.
+      </p>
+    </div>
+
+    <!-- Multi-select hint -->
+    <div class="multiselect-hint" role="note">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>You can select <strong>multiple roles</strong> — they stack. Fan + Local Helper is perfectly valid!</span>
+    </div>
+
+    <!-- Role Cards -->
+    <div
+      class="roles-grid"
+      role="group"
+      aria-label="Select your role or roles"
+    >
+
+      <!-- Fan -->
+      <button
+        class="role-card role-card--fan selected"
+        role="checkbox"
+        aria-checked="true"
+        aria-describedby="fan-desc"
+        data-role="fan"
+      >
+        <div class="role-card__check" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="role-card__icon-wrap" aria-hidden="true">🏟️</div>
+        <div class="role-card__label">Fan</div>
+        <p class="role-card__desc" id="fan-desc">
+          Discover matches, build your Community Trip, connect with fans from your Country Community, and live the tournament together.
+        </p>
+        <ul class="role-card__perks" aria-label="Fan features">
+          <li class="perk">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Fan Profile &amp; Country Community
+          </li>
+          <li class="perk">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Community Trip planner
+          </li>
+          <li class="perk">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Event discovery &amp; tickets
+          </li>
+        </ul>
+      </button>
+
+      <!-- Local Helper -->
+      <button
+        class="role-card role-card--helper"
+        role="checkbox"
+        aria-checked="false"
+        aria-describedby="helper-desc"
+        data-role="local-helper"
+      >
+        <div class="role-card__badge">Most wanted</div>
+        <div class="role-card__check" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="role-card__icon-wrap" aria-hidden="true">🤝</div>
+        <div class="role-card__label">Local Helper</div>
+        <p class="role-card__desc" id="helper-desc">
+          You live in a host city (USA, Canada, or Mexico). Offer insider tips, guided tours, or accommodation support to visiting fans.
+        </p>
+        <ul class="role-card__perks" aria-label="Local Helper features">
+          <li class="perk">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Local Helper profile &amp; rating
+          </li>
+          <li class="perk">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Service listings &amp; bookings
+          </li>
+          <li class="perk">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Earnings dashboard
+          </li>
+        </ul>
+      </button>
+
+      <!-- Organiser -->
+      <button
+        class="role-card role-card--organiser"
+        role="checkbox"
+        aria-checked="false"
+        aria-describedby="organiser-desc"
+        data-role="organiser"
+      >
+        <div class="role-card__check" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="role-card__icon-wrap" aria-hidden="true">📋</div>
+        <div class="role-card__label">Organiser</div>
+        <p class="role-card__desc" id="organiser-desc">
+          Create and manage Events around matches — watch parties, fan meetups, cultural nights — and publish them to Country Communities.
+        </p>
+        <ul class="role-card__perks" aria-label="Organiser features">
+          <li class="perk">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Event creation tools
+          </li>
+          <li class="perk">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Attendee management
+          </li>
+          <li class="perk">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Community broadcast tools
+          </li>
+        </ul>
+      </button>
+
+    </div>
+
+    <!-- Action Row -->
+    <div class="action-row">
+      <button class="btn-ghost" aria-label="Go back to previous step">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+      <div class="selection-tally" aria-live="polite">
+        <strong>1 role</strong> selected — Fan
+      </div>
+      <button class="btn-primary" aria-label="Continue with selected roles">
+        Continue
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="#">Privacy Policy</a>
+    <span aria-hidden="true">·</span>
+    <a href="#">Terms of Use</a>
+    <span aria-hidden="true">·</span>
+    <span>© 2026 RoarPass Inc.</span>
+    <span aria-hidden="true">·</span>
+    <a href="#">GDPR / CCPA</a>
+  </footer>
+
+</div>
+
+<script>
+  // Toggle card selection
+  document.querySelectorAll('.role-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const checked = card.getAttribute('aria-checked') === 'true';
+      card.setAttribute('aria-checked', String(!checked));
+      card.classList.toggle('selected', !checked);
+      updateTally();
+    });
+    card.addEventListener('keydown', e => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        card.click();
+      }
+    });
+  });
+
+  function updateTally() {
+    const selected = [...document.querySelectorAll('.role-card[aria-checked="true"]')];
+    const tally = document.querySelector('.selection-tally');
+    const btn = document.querySelector('.btn-primary');
+    if (selected.length === 0) {
+      tally.innerHTML = 'No role selected yet';
+      btn.disabled = true;
+    } else {
+      const labels = selected.map(c => c.querySelector('.role-card__label').textContent);
+      tally.innerHTML = `<strong>${selected.length} role${selected.length > 1 ? 's' : ''}</strong> selected — ${labels.join(', ')}`;
+      btn.disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>
