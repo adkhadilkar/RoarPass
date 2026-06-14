@@ -1,20 +1,17 @@
 import { Router } from 'express';
-import { authRouter } from './auth';
 import { eventsRouter } from './events';
 import { communitiesRouter } from './communities';
 import { fanProfilesRouter } from './fanProfiles';
-import { localHelpersRouter } from './localHelpers';
-import { communityTripsRouter } from './communityTrips';
-import { businessPartnerRouter } from './businessPartner';
+import { tripsRouter } from './trips';
+import { helperNetworkRouter } from './helperNetwork';
 
-const router = Router();
+export const apiRouter = Router();
 
-router.use('/auth', authRouter);
-router.use('/events', eventsRouter);
-router.use('/communities', communitiesRouter);
-router.use('/fan-profiles', fanProfilesRouter);
-router.use('/local-helpers', localHelpersRouter);
-router.use('/community-trips', communityTripsRouter);
-router.use('/business-partners', businessPartnerRouter);
+// Already-merged chunks
+apiRouter.use('/events', eventsRouter);
+apiRouter.use('/communities', communitiesRouter);
+apiRouter.use('/fan-profiles', fanProfilesRouter);
+apiRouter.use('/trips', tripsRouter);
 
-export default router;
+// helper-network chunk
+apiRouter.use('/helpers', helperNetworkRouter);
