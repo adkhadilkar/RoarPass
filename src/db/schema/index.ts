@@ -1,6 +1,10 @@
-// Barrel export for all entity schemas.
-// Conflict resolved: keep prior exports AND add event-registry exports.
-export * from './fanProfile';
-export * from './countryCommunity';
-export * from './event';
-export * from './eventRegistration';
+// Barrel export for all schema modules. Both branches added entries here;
+// preserved alphabetical ordering and both sets of exports.
+export * from './users';
+export * from './events';
+export * from './communities';
+export * from './fanProfiles';
+export * from './localHelpers';
+export * from './communityTrips';
+export * from './businessPartners';
+export * from './businessPartnerOffers';

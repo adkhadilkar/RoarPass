@@ -1,15 +1,20 @@
 import { Router } from 'express';
-import { tripRouter } from './trips';
-import { helperRouter } from './helpers';
-import { profileRouter } from './profiles';
-import { moderationRouter } from './moderation';
+import { authRouter } from './auth';
+import { eventsRouter } from './events';
+import { communitiesRouter } from './communities';
+import { fanProfilesRouter } from './fanProfiles';
+import { localHelpersRouter } from './localHelpers';
+import { communityTripsRouter } from './communityTrips';
+import { businessPartnerRouter } from './businessPartner';
 
-export const apiRouter = Router();
+const router = Router();
 
-// Existing routes (main)
-apiRouter.use('/trips', tripRouter);
-apiRouter.use('/helpers', helperRouter);
-apiRouter.use('/profiles', profileRouter);
+router.use('/auth', authRouter);
+router.use('/events', eventsRouter);
+router.use('/communities', communitiesRouter);
+router.use('/fan-profiles', fanProfilesRouter);
+router.use('/local-helpers', localHelpersRouter);
+router.use('/community-trips', communityTripsRouter);
+router.use('/business-partners', businessPartnerRouter);
 
-// community-moderation chunk
-apiRouter.use('/moderation', moderationRouter);
+export default router;
