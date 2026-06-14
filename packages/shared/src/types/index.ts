@@ -1,2 +1,2 @@
-export * from './safety';
-// Re-export other shared types as needed
+// Re-export all shared types - add intercity-coordination exports
+export * from './intercity-coordination';
