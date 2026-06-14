@@ -1,0 +1,668 @@
+{
+  "pages": [
+    {
+      "id": "P01",
+      "slug": "onboarding-welcome",
+      "title": "Onboarding \u2014 Welcome & Auth",
+      "req_refs": [
+        "identity-onboarding:7.2.1",
+        "identity-onboarding:7.2.2"
+      ],
+      "type": "flow",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P02",
+      "slug": "onboarding-profile-setup",
+      "title": "Onboarding \u2014 Fan Profile Setup",
+      "req_refs": [
+        "identity-onboarding:7.2.2",
+        "identity-onboarding:5.3",
+        "translation-layer:5.1"
+      ],
+      "type": "flow",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P03",
+      "slug": "onboarding-role-selection",
+      "title": "Onboarding \u2014 Multi-Role Selection",
+      "req_refs": [
+        "identity-onboarding:7.2.3",
+        "identity-onboarding:6"
+      ],
+      "type": "flow",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P04",
+      "slug": "event-activation",
+      "title": "Event Activation & Host City Selection",
+      "req_refs": [
+        "identity-onboarding:7.2.1",
+        "event-registry:7.1",
+        "translation-layer:REQ-TRANS-15"
+      ],
+      "type": "flow",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P05",
+      "slug": "verification-center",
+      "title": "Verification & Trust Tiers Center",
+      "req_refs": [
+        "verification-trust-tiers:7.2.4",
+        "verification-trust-tiers:7.10.1"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P06",
+      "slug": "home-dashboard",
+      "title": "Home Dashboard / Activated Event Hub",
+      "req_refs": [
+        "event-registry:5.1",
+        "identity-onboarding:6",
+        "official-info-layer:7.8.1"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P07",
+      "slug": "community-directory",
+      "title": "Country & City Community Directory",
+      "req_refs": [
+        "country-communities:5.2",
+        "country-communities:7.3.1"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P08",
+      "slug": "community-feed",
+      "title": "Community Feed & Channel List",
+      "req_refs": [
+        "country-communities:7.3.1",
+        "country-communities:7.3.3",
+        "community-moderation:7.3.2"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P09",
+      "slug": "community-channel",
+      "title": "Community Channel \u2014 Threaded Messages",
+      "req_refs": [
+        "messaging-realtime:7.7.1",
+        "country-communities:7.3.2",
+        "translation-layer:REQ-TRANS-02",
+        "translation-layer:REQ-TRANS-10"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P10",
+      "slug": "direct-messages",
+      "title": "Direct Messages & Group Chat",
+      "req_refs": [
+        "messaging-realtime:7.7.1",
+        "messaging-realtime:7.7.3",
+        "translation-layer:REQ-TRANS-06"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P11",
+      "slug": "match-day-live-chat",
+      "title": "Match-Day Live Chat",
+      "req_refs": [
+        "messaging-realtime:7.7.3",
+        "translation-layer:REQ-TRANS-06"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P12",
+      "slug": "smart-match-discovery",
+      "title": "Smart Fan Matching & Discovery Cards",
+      "req_refs": [
+        "matching-engine:7.4.1",
+        "matching-engine:7.4.2",
+        "matching-engine:7.9.1"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P13",
+      "slug": "match-visibility-settings",
+      "title": "Matching Opt-In Visibility Settings",
+      "req_refs": [
+        "matching-engine:7.4.3",
+        "matching-engine:7.9.2"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P14",
+      "slug": "trip-builder",
+      "title": "Personal Itinerary / Trip Builder",
+      "req_refs": [
+        "trip-itinerary:5.5",
+        "trip-itinerary:7.5.1",
+        "trip-itinerary:7.5.2"
+      ],
+      "type": "flow",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P15",
+      "slug": "group-itinerary",
+      "title": "Shared Group Itinerary & Coordination",
+      "req_refs": [
+        "trip-itinerary:7.5.2",
+        "trip-itinerary:7.5.4",
+        "messaging-realtime:7.7.1"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P16",
+      "slug": "intercity-routes",
+      "title": "Intercity Trip Coordination View",
+      "req_refs": [
+        "intercity-coordination:7.5.3",
+        "intercity-coordination:7.4.1",
+        "intercity-coordination:7.8.4"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P17",
+      "slug": "helper-directory",
+      "title": "Local Helper Directory & Search",
+      "req_refs": [
+        "helper-network:5.4",
+        "helper-network:7.6.1",
+        "helper-network:7.6.2"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P18",
+      "slug": "helper-profile",
+      "title": "Local Helper Profile & Request Flow",
+      "req_refs": [
+        "helper-network:7.6.2",
+        "helper-network:7.6.3",
+        "helper-network:7.6.4",
+        "verification-trust-tiers:7.10.1"
+      ],
+      "type": "flow",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P19",
+      "slug": "helper-management",
+      "title": "Helper Mode \u2014 Offerings & Availability",
+      "req_refs": [
+        "helper-network:6.2",
+        "helper-network:7.6.1",
+        "helper-network:7.6.4"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P20",
+      "slug": "official-info-guides",
+      "title": "Official Info & Visa Intelligence",
+      "req_refs": [
+        "official-info-layer:7.8.1",
+        "official-info-layer:7.8.2",
+        "official-info-layer:7.8.4"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P21",
+      "slug": "safety-modes",
+      "title": "Safety Modes & Trusted Contacts",
+      "req_refs": [
+        "safety-trust-system:7.10.2",
+        "safety-trust-system:7.10.3",
+        "safety-trust-system:7.10.4"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P22",
+      "slug": "meetup-safety",
+      "title": "Meetup Check-In/Out & Location Sharing",
+      "req_refs": [
+        "safety-trust-system:7.10.2",
+        "safety-trust-system:7.10.4"
+      ],
+      "type": "flow",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P23",
+      "slug": "sos-overlay",
+      "title": "Emergency SOS Overlay",
+      "req_refs": [
+        "safety-trust-system:7.10.5",
+        "translation-layer:REQ-TRANS-14"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P24",
+      "slug": "phrase-cards",
+      "title": "Emergency Phrase Cards Viewer",
+      "req_refs": [
+        "translation-layer:REQ-TRANS-11",
+        "translation-layer:REQ-TRANS-13",
+        "translation-layer:REQ-TRANS-16",
+        "translation-layer:REQ-TRANS-17"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P25",
+      "slug": "translation-preferences",
+      "title": "Translation Preferences Settings",
+      "req_refs": [
+        "translation-layer:REQ-TRANS-04",
+        "translation-layer:REQ-TRANS-08"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P26",
+      "slug": "notifications-center",
+      "title": "Notifications Center & Subscription Controls",
+      "req_refs": [
+        "notifications:7.7.4",
+        "notifications:7.8.3"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P27",
+      "slug": "ai-trip-assistant",
+      "title": "AI Trip Assistant Conversational UI",
+      "req_refs": [
+        "ai-trip-assistant:7.9.3",
+        "ai-trip-assistant:REQ-AI-01",
+        "ai-trip-assistant:REQ-AI-NFR-03"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P28",
+      "slug": "ai-assistant-premium-gate",
+      "title": "AI Assistant Premium Upgrade Gate",
+      "req_refs": [
+        "ai-trip-assistant:REQ-AI-29",
+        "ai-trip-assistant:REQ-AI-30",
+        "ai-trip-assistant:REQ-AI-31"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P29",
+      "slug": "business-portal-dashboard",
+      "title": "Business Partner Portal Dashboard",
+      "req_refs": [
+        "business-partner-portal:6.5",
+        "business-partner-portal:7.11.1",
+        "business-partner-portal:7.11.3"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P30",
+      "slug": "business-listing-editor",
+      "title": "Business Listing & Menu Editor",
+      "req_refs": [
+        "business-partner-portal:7.11.1",
+        "business-partner-portal:7.11.2"
+      ],
+      "type": "flow",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P31",
+      "slug": "business-discovery",
+      "title": "Fan-Facing Business Discovery & Discounts",
+      "req_refs": [
+        "business-partner-portal:7.11.2",
+        "business-partner-portal:7.11.3"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "P32",
+      "slug": "admin-console-home",
+      "title": "Admin Console \u2014 Overview & Event Management",
+      "req_refs": [
+        "admin-console-analytics:6.6",
+        "admin-console-analytics:7.12.1",
+        "event-registry:7.1"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop"
+      ]
+    },
+    {
+      "id": "P33",
+      "slug": "admin-moderation-queue",
+      "title": "Admin \u2014 Moderation Queue & Audit Log",
+      "req_refs": [
+        "admin-console-analytics:7.12.2",
+        "admin-console-analytics:7.12.3",
+        "community-moderation:7.10.2"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop"
+      ]
+    },
+    {
+      "id": "P34",
+      "slug": "admin-analytics-dashboard",
+      "title": "Admin \u2014 Analytics Dashboards",
+      "req_refs": [
+        "admin-console-analytics:7.12.4",
+        "admin-console-analytics:9.2"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop"
+      ]
+    },
+    {
+      "id": "P35",
+      "slug": "admin-phrase-library",
+      "title": "Admin \u2014 Phrase Card Library & Host Language Mapping",
+      "req_refs": [
+        "translation-layer:REQ-TRANS-18",
+        "translation-layer:6.4",
+        "translation-layer:6.5"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop"
+      ]
+    },
+    {
+      "id": "P36",
+      "slug": "settings-privacy-consent",
+      "title": "Settings \u2014 Privacy, Consent & Data Rights",
+      "req_refs": [
+        "platform-foundation-nfr:9.1",
+        "identity-onboarding:9.2",
+        "ai-trip-assistant:REQ-AI-NFR-05"
+      ],
+      "type": "page",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "C01",
+      "slug": "app-shell-nav",
+      "title": "Shared \u2014 App Shell & Primary Navigation",
+      "req_refs": [
+        "platform-foundation-nfr:8.6",
+        "platform-foundation-nfr:8.7"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "C02",
+      "slug": "trust-badge",
+      "title": "Shared \u2014 Trust Tier Badge",
+      "req_refs": [
+        "verification-trust-tiers:7.10.1"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "C03",
+      "slug": "message-bubble",
+      "title": "Shared \u2014 Message Bubble w/ Translation Overlay",
+      "req_refs": [
+        "messaging-realtime:7.7.1",
+        "translation-layer:REQ-TRANS-03",
+        "translation-layer:REQ-TRANS-09"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "C04",
+      "slug": "fan-match-card",
+      "title": "Shared \u2014 Smart Match / Discovery Card",
+      "req_refs": [
+        "matching-engine:7.9.1",
+        "matching-engine:7.4.2"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "C05",
+      "slug": "helper-card",
+      "title": "Shared \u2014 Helper Summary Card",
+      "req_refs": [
+        "helper-network:7.6.2",
+        "verification-trust-tiers:7.10.1"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "C06",
+      "slug": "trip-object-card",
+      "title": "Shared \u2014 Trip Object Card",
+      "req_refs": [
+        "trip-itinerary:7.5.1"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "C07",
+      "slug": "alert-banner",
+      "title": "Shared \u2014 Safety/Operational Alert Banner",
+      "req_refs": [
+        "notifications:7.8.3",
+        "safety-trust-system:7.10.2"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "C08",
+      "slug": "language-switcher",
+      "title": "Shared \u2014 Language Switcher & RTL Toggle",
+      "req_refs": [
+        "platform-foundation-nfr:8.6",
+        "translation-layer:7.4"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "C09",
+      "slug": "sos-fab",
+      "title": "Shared \u2014 Always-Visible SOS Floating Button",
+      "req_refs": [
+        "safety-trust-system:7.10.5"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "id": "C10",
+      "slug": "ai-suggestion-card",
+      "title": "Shared \u2014 AI Assistant Suggestion Card",
+      "req_refs": [
+        "ai-trip-assistant:REQ-AI-16",
+        "ai-trip-assistant:REQ-AI-NFR-15"
+      ],
+      "type": "component",
+      "viewport": [
+        "desktop",
+        "mobile"
+      ]
+    }
+  ]
+}
