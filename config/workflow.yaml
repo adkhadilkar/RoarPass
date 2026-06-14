@@ -1,0 +1,69 @@
+# RoarPass workflow control.
+
+build_scope:
+  # What actually gets built in Phase 3 (per approved decision):
+  target: web_and_mobile_web        # responsive web app + mobile web; native apps deferred
+  event_focus: fifa_world_cup_2026  # single event for the demo
+  backend: full_stack_single_event  # real backend, scoped to one event (not full microservices)
+
+
+deploy:
+  target: vercel_neon          # public demo: Vercel app + Neon Postgres (no inactivity pause)
+  demo_logins: true            # seed labeled demo accounts, shown on login screen
+  native_apps: deferred        # store apps need paid accounts; mobile-web covers phones
+
+notify:
+  service: ntfy                # phone push at gates; topic from NTFY_TOPIC env (free, no account)
+
+phases:
+  - id: 0
+    name: bootstrap
+    spec: phases/phase0_bootstrap.md
+    gate_after: false
+    push_to_github: true            # initial scaffold commit
+  - id: 1
+    name: requirements
+    spec: phases/phase1_requirements.md
+    gate_after: false
+    push_to_github: true            # commit refined-requirements artifacts
+  - id: 2
+    name: design
+    spec: phases/phase2_design.md
+    gate_after: true                # <<< THE ONLY MANDATORY HUMAN GATE
+    push_to_github: true            # commit design artifacts + screens
+  - id: 3
+    name: implementation
+    spec: phases/phase3_implementation.md
+    gate_after: false
+    push_to_github: true            # feature commits + final tagged commit
+  - id: 4
+    name: data_testing_demo
+    spec: phases/phase4_data_testing_demo.md
+    gate_after: false               # ends here; demo produced, no pause
+    push_to_github: true            # commit seed data, test reports, demo assets
+  - id: 5
+    name: build_animation
+    spec: phases/phase5_build_animation.md
+    gate_after: false               # final phase; renders the build-story animation
+    push_to_github: true            # commit GIF/MP4 build animation
+
+fanout:
+  # Dynamic chunking: the chunker agent decides count, bounded here for safety.
+  max_parallel_agents: 6            # concurrency cap for API politeness / rate limits
+  min_chunks: 4
+  max_chunks: 40
+  # Each refiner reviews a window of N sibling artifacts before cross-cutting.
+  reviewer_window: 3
+  retry_per_agent: 2
+
+gate:
+  awaiting_file: state/AWAITING_APPROVAL.md
+  approval_file: state/APPROVAL.json
+  # On --revise, the design phase re-runs only the refinement+review loop with feedback,
+  # not the full chunk+design from scratch (unless --revise-full is passed).
+
+quality_loops:
+  # Refiner -> worker feedback cycles before a chunk is accepted.
+  requirements_max_rounds: 3
+  design_max_rounds: 4
+  code_review_max_rounds: 3

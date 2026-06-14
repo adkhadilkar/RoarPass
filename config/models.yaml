@@ -1,0 +1,38 @@
+# Model routing for the RoarPass workflow.
+# All roles call the Anthropic API with ANTHROPIC_API_KEY from the environment.
+# Change a value here to re-route a role to a different model.
+
+defaults:
+  orchestrator: claude-opus-4-8        # top-level planning, gating, merge arbitration
+  worker: claude-sonnet-4-6            # high-volume fan-out roles
+  reviewer: claude-opus-4-8            # judgment-heavy review roles
+
+# Per-role overrides (role name -> model). Falls back to the tier default if absent.
+roles:
+  # Phase 1
+  req_chunker: claude-opus-4-8         # one-shot decomposition, quality matters
+  req_explorer: claude-sonnet-4-6
+  req_consistency_reviewer: claude-opus-4-8
+
+  # Phase 2
+  design_chunker: claude-opus-4-8
+  page_designer: claude-sonnet-4-6
+  asset_designer: claude-sonnet-4-6
+  design_refiner: claude-opus-4-8
+  design_system_reviewer: claude-opus-4-8
+
+  # Phase 3
+  coder: claude-sonnet-4-6
+  code_reviewer: claude-opus-4-8
+  merge_agent: claude-opus-4-8
+  deploy_agent: claude-sonnet-4-6
+
+  # Phase 4
+  data_seeder: claude-sonnet-4-6
+  test_agent: claude-sonnet-4-6
+  demo_agent: claude-opus-4-8
+
+# Generation params
+params:
+  max_tokens: 8192
+  design_temperature: 0.7

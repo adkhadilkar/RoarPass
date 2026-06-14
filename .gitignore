@@ -1,0 +1,29 @@
+# Secrets — never commit
+.env
+*.key
+*.pem
+state/APPROVAL.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node / build
+node_modules/
+dist/
+build/
+.next/
+
+# Runtime/agent scratch
+state/agent_logs/
+*.log
+
+# OS
+.DS_Store
+
+# observability artifacts (regenerated each run)
+state/run_log.jsonl
+state/dashboard.html
+state/run_state.json

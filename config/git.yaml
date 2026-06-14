@@ -1,0 +1,36 @@
+# Git / GitHub push policy. Secrets are NEVER stored here — only env var names.
+# The orchestrator reads the actual values from the environment / .env at runtime.
+
+credentials:
+  token_env: GITHUB_TOKEN        # personal access token (repo scope)
+  user_env: GITHUB_USER          # github username
+  repo_env: GITHUB_REPO          # e.g. roarpass-demo  (must be an EXISTING public repo)
+  remote_url_template: "https://{user}:{token}@github.com/{user}/{repo}.git"
+  # NOTE: token is injected into the remote URL only in-process and is scrubbed from logs.
+
+branching:
+  main_branch: main
+  feature_branch_prefix: feat/      # implementation chunks: feat/<chunk-slug>
+  design_branch: design/phase2
+  requirements_branch: req/phase1
+
+commit_policy:
+  # One commit per phase artifact bundle, plus finer commits inside Phase 3.
+  phase0: "chore: bootstrap RoarPass scaffold"
+  phase1: "docs(req): refined requirements + per-chunk specs"
+  phase2: "docs(design): UX/UI design system + per-page screens"
+  phase3_feature: "feat({chunk}): implement {chunk_title}"
+  phase3_merge: "merge: integrate {chunk} into main"
+  phase3_final: "build: deployable web + mobile-web app"
+  phase4: "test: FIFA WC 2026 seed data, test reports, demo assets"
+
+push_policy:
+  push_on_phase_complete: true
+  tag_phase3_final: "v0.1.0-demo"
+  # PUBLIC repo reminder: anything committed is world-readable.
+  # .env, secrets, and seed data containing real PII must stay gitignored.
+  forbid_paths:
+    - .env
+    - "*.key"
+    - "*.pem"
+    - state/APPROVAL.json
