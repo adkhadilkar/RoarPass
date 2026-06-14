@@ -1,17 +1,23 @@
 import { Router } from 'express';
-import { eventsRouter } from './events';
-import { communitiesRouter } from './communities';
-import { fanProfilesRouter } from './fanProfiles';
-import { tripsRouter } from './trips';
-import { helperNetworkRouter } from './helperNetwork';
+import { eventRoutes } from './events';
+import { communityRoutes } from './communities';
+import { fanProfileRoutes } from './fanProfiles';
+import { localHelperRoutes } from './localHelpers';
+import { communityTripRoutes } from './communityTrips';
+import { adminConsoleRoutes } from './admin/console';
+import { adminAnalyticsRoutes } from './admin/analytics';
 
-export const apiRouter = Router();
+const router = Router();
 
-// Already-merged chunks
-apiRouter.use('/events', eventsRouter);
-apiRouter.use('/communities', communitiesRouter);
-apiRouter.use('/fan-profiles', fanProfilesRouter);
-apiRouter.use('/trips', tripsRouter);
+// Public + authenticated feature routes (already merged)
+router.use('/events', eventRoutes);
+router.use('/communities', communityRoutes);
+router.use('/fan-profiles', fanProfileRoutes);
+router.use('/local-helpers', localHelperRoutes);
+router.use('/community-trips', communityTripRoutes);
 
-// helper-network chunk
-apiRouter.use('/helpers', helperNetworkRouter);
+// Admin console + analytics (this chunk)
+router.use('/admin/console', adminConsoleRoutes);
+router.use('/admin/analytics', adminAnalyticsRoutes);
+
+export { router };
