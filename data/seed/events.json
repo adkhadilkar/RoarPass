@@ -1,0 +1,54 @@
+{
+  "events": [
+    {
+      "id": "evt_wc2026",
+      "type": "FIFA_WORLD_CUP",
+      "name": "FIFA World Cup 2026",
+      "slug": "fifa-world-cup-2026",
+      "edition": 23,
+      "startDate": "2026-06-11",
+      "endDate": "2026-07-19",
+      "hosts": ["USA", "CAN", "MEX"],
+      "officialSite": "https://www.fifa.com/worldcup",
+      "logoUrl": "/assets/events/wc2026-logo.png",
+      "bannerUrl": "/assets/events/wc2026-banner.jpg",
+      "currency": ["USD", "CAD", "MXN"],
+      "ticketingPartner": "FIFATickets",
+      "status": "UPCOMING",
+      "i18n": {
+        "en": "FIFA World Cup 2026",
+        "es": "Copa Mundial de la FIFA 2026",
+        "fr": "Coupe du Monde de la FIFA 2026",
+        "ar": "كأس العالم لكرة القدم 2026",
+        "pt": "Copa do Mundo FIFA 2026",
+        "de": "FIFA Weltmeisterschaft 2026",
+        "zh": "2026年国际足联世界杯"
+      }
+    },
+    {
+      "id": "evt_cwc2025",
+      "type": "FIFA_CLUB_WORLD_CUP",
+      "name": "FIFA Club World Cup 2025",
+      "slug": "fifa-club-world-cup-2025",
+      "edition": 1,
+      "startDate": "2025-06-15",
+      "endDate": "2025-07-13",
+      "hosts": ["USA"],
+      "officialSite": "https://www.fifa.com/clubworldcup",
+      "logoUrl": "/assets/events/cwc2025-logo.png",
+      "bannerUrl": "/assets/events/cwc2025-banner.jpg",
+      "currency": ["USD"],
+      "ticketingPartner": "FIFATickets",
+      "status": "UPCOMING",
+      "i18n": {
+        "en": "FIFA Club World Cup 2025",
+        "es": "Copa Mundial de Clubes de la FIFA 2025",
+        "fr": "Coupe du Monde des Clubs de la FIFA 2025",
+        "ar": "كأس العالم للأندية 2025",
+        "pt": "Copa do Mundo de Clubes FIFA 2025",
+        "de": "FIFA Klub-Weltmeisterschaft 2025",
+        "zh": "2025年国际足联俱乐部世界杯"
+      }
+    }
+  ]
+}

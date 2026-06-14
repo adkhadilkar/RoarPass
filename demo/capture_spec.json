@@ -1,0 +1,130 @@
+{
+  "version": "1.0",
+  "meta": {
+    "journey": "south_korea_wc2026_flagship",
+    "base_url_env": "DEMO_BASE_URL",
+    "auth_token_env": "DEMO_SESSION_TOKEN",
+    "locale": "ko-KR",
+    "fallback_locale": "en-US",
+    "viewport": { "width": 390, "height": 844, "deviceScaleFactor": 3, "isMobile": true },
+    "reduced_motion": false,
+    "seed_data": "fixtures/demo_seed_korea_wc2026.json",
+    "redact_selectors": ["[data-pii]", ".real-contact", ".token"],
+    "wait_strategy": "networkidle"
+  },
+  "output": {
+    "dir": "demo/assets",
+    "png": { "format": "png", "full_page": false },
+    "gif": { "fps": 15, "max_width": 780, "loop": 0 },
+    "mp4": { "fps": 30, "crf": 23, "max_width": 1080 }
+  },
+  "captures": [
+    {
+      "id": "01_onboarding_locale",
+      "type": "png",
+      "route": "/onboarding",
+      "steps": [
+        { "action": "waitFor", "selector": "[data-testid='locale-picker']" },
+        { "action": "click", "selector": "[data-testid='locale-ko']" },
+        { "action": "waitFor", "selector": "[data-testid='consent-screen']" }
+      ],
+      "screenshot": "01_onboarding_locale.png"
+    },
+    {
+      "id": "02_activate_event",
+      "type": "gif",
+      "route": "/events",
+      "steps": [
+        { "action": "waitFor", "selector": "[data-testid='event-card-wc2026']" },
+        { "action": "startRecord" },
+        { "action": "click", "selector": "[data-testid='event-card-wc2026']" },
+        { "action": "waitFor", "selector": "[data-testid='event-activated-badge']" },
+        { "action": "scrollTo", "selector": "[data-testid='host-cities']" },
+        { "action": "pause", "ms": 800 },
+        { "action": "stopRecord" }
+      ],
+      "asset": "02_activate_event.gif"
+    },
+    {
+      "id": "03_join_community",
+      "type": "png",
+      "route": "/communities/south-korea",
+      "steps": [
+        { "action": "click", "selector": "[data-testid='join-community-btn']" },
+        { "action": "waitFor", "selector": "[data-testid='community-feed']" }
+      ],
+      "screenshot": "03_join_community.png"
+    },
+    {
+      "id": "04_find_helper_la",
+      "type": "gif",
+      "route": "/helpers?city=los-angeles&lang=ko&verified=true",
+      "steps": [
+        { "action": "waitFor", "selector": "[data-testid='helper-list']" },
+        { "action": "startRecord" },
+        { "action": "click", "selector": "[data-testid='helper-min-seo']" },
+        { "action": "waitFor", "selector": "[data-testid='helper-profile']" },
+        { "action": "pause", "ms": 600 },
+        { "action": "click", "selector": "[data-testid='helper-connect-btn']" },
+        { "action": "waitFor", "selector": "[data-testid='consent-gate']" },
+        { "action": "click", "selector": "[data-testid='consent-accept']" },
+        { "action": "waitFor", "selector": "[data-testid='helper-chat']" },
+        { "action": "stopRecord" }
+      ],
+      "asset": "04_find_helper_la.gif"
+    },
+    {
+      "id": "05_intercity_trip",
+      "type": "gif",
+      "route": "/trips/new",
+      "steps": [
+        { "action": "startRecord" },
+        { "action": "click", "selector": "[data-testid='origin-dallas']" },
+        { "action": "click", "selector": "[data-testid='dest-houston']" },
+        { "action": "click", "selector": "[data-testid='trip-date']" },
+        { "action": "click", "selector": "[data-testid='date-2026-06-27']" },
+        { "action": "click", "selector": "[data-testid='create-trip-btn']" },
+        { "action": "waitFor", "selector": "[data-testid='trip-itinerary']" },
+        { "action": "scrollTo", "selector": "[data-testid='trip-cotravelers']" },
+        { "action": "pause", "ms": 700 },
+        { "action": "stopRecord" }
+      ],
+      "asset": "05_intercity_trip.gif"
+    },
+    {
+      "id": "06_meetup",
+      "type": "gif",
+      "route": "/trips/dallas-houston/meetup",
+      "steps": [
+        { "action": "startRecord" },
+        { "action": "click", "selector": "[data-testid='create-meetup-btn']" },
+        { "action": "waitFor", "selector": "[data-testid='meetup-pin']" },
+        { "action": "click", "selector": "[data-testid='share-meetup-window']" },
+        { "action": "waitFor", "selector": "[data-testid='group-chat']" },
+        { "action": "type", "selector": "[data-testid='chat-input']", "text": "스타디움 앞에서 만나요! 🇰🇷" },
+        { "action": "click", "selector": "[data-testid='chat-send']" },
+        { "action": "pause", "ms": 600 },
+        { "action": "stopRecord" }
+      ],
+      "asset": "06_meetup.gif"
+    },
+    {
+      "id": "07_sos_demo",
+      "type": "gif",
+      "route": "/trips/dallas-houston/meetup",
+      "steps": [
+        { "action": "startRecord" },
+        { "action": "click", "selector": "[data-testid='sos-fab']" },
+        { "action": "waitFor", "selector": "[data-testid='sos-confirm-1']" },
+        { "action": "click", "selector": "[data-testid='sos-confirm-1']" },
+        { "action": "waitFor", "selector": "[data-testid='sos-confirm-2']" },
+        { "action": "click", "selector": "[data-testid='sos-confirm-2']" },
+        { "action": "waitFor", "selector": "[data-testid='sos-active-banner']" },
+        { "action": "waitFor", "selector": "[data-testid='emergency-numbers-us']" },
+        { "action": "pause", "ms": 1000 },
+        { "action": "stopRecord" }
+      ],
+      "asset": "07_sos_demo.gif"
+    }
+  ]
+}

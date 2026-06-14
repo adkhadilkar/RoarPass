@@ -1,0 +1,63 @@
+{
+  "posts": [
+    {
+      "id": "post-normal-1",
+      "community_id": "community-id-wc2026-brazil",
+      "author_id": "user-member-1",
+      "content": "Anyone going to the opening match in São Paulo?",
+      "type": "discussion",
+      "status": "published",
+      "created_at": "2025-01-10T10:00:00Z"
+    },
+    {
+      "id": "post-flagged-1",
+      "community_id": "community-id-wc2026-brazil",
+      "author_id": "user-anon-1",
+      "content": "BUY CHEAP TICKETS HERE http://scam.example.com CLICK NOW",
+      "type": "discussion",
+      "status": "flagged",
+      "flag_reason": "spam",
+      "created_at": "2025-01-10T11:00:00Z"
+    },
+    {
+      "id": "post-flagged-hate-1",
+      "community_id": "community-id-wc2026-brazil",
+      "author_id": "user-anon-1",
+      "content": "[HATE_SPEECH_PLACEHOLDER — replaced by seeder]",
+      "type": "discussion",
+      "status": "flagged",
+      "flag_reason": "hate_speech",
+      "created_at": "2025-01-10T11:30:00Z"
+    },
+    {
+      "id": "post-automod-trigger-1",
+      "community_id": "community-id-wc2026-brazil",
+      "author_id": "user-member-1",
+      "content": "[AUTO_MOD_TRIGGER_CONTENT — contains pattern-matched keyword set by seeder]",
+      "type": "discussion",
+      "status": "pending_review",
+      "auto_flagged": true,
+      "created_at": "2025-01-10T12:00:00Z"
+    },
+    {
+      "id": "post-pinned-guide-1",
+      "community_id": "community-id-wc2026-brazil",
+      "author_id": "user-moderator-1",
+      "content": "Welcome to Brazil! Official community rules and visitor guide.",
+      "type": "pinned_guide",
+      "status": "published",
+      "pinned": true,
+      "pinned_at": "2025-01-09T08:00:00Z",
+      "created_at": "2025-01-09T08:00:00Z"
+    },
+    {
+      "id": "post-announcement-1",
+      "community_id": "community-id-wc2026-brazil",
+      "author_id": "user-moderator-1",
+      "content": "Matchday transport information for Estádio do Maracanã",
+      "type": "announcement",
+      "status": "published",
+      "created_at": "2025-01-09T09:00:00Z"
+    }
+  ]
+}

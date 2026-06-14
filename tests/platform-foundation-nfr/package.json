@@ -1,0 +1,30 @@
+{
+  "name": "@roarpass/tests-platform-foundation-nfr",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest --config jest.config.ts --runInBand",
+    "test:e2e": "playwright test --config playwright.config.ts",
+    "test:security": "ts-node security/run-zap-scan.ts && jest --testPathPattern='security/'",
+    "test:load": "python -m pytest load/ -v",
+    "test:privacy": "jest --testPathPattern='privacy/'",
+    "test:observability": "jest --testPathPattern='observability/'",
+    "test:all": "pnpm test && pnpm test:e2e && pnpm test:security && pnpm test:load && pnpm test:privacy && pnpm test:observability"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.9.0",
+    "@playwright/test": "^1.44.0",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "jsonwebtoken": "^9.0.2",
+    "tough-cookie": "^4.1.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.14.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.4",
+    "typescript": "^5.4.5"
+  }
+}

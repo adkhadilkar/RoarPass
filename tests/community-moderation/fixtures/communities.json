@@ -1,0 +1,40 @@
+{
+  "communities": [
+    {
+      "id": "community-id-wc2026-brazil",
+      "slug": "wc2026-brazil",
+      "name": "Brazil Fan Community — WC 2026",
+      "country_code": "BRA",
+      "event_id": "event-wc2026",
+      "language": "pt-BR",
+      "rtl": false,
+      "moderator_ids": ["user-moderator-1"],
+      "member_count": 1500,
+      "status": "active"
+    },
+    {
+      "id": "community-id-cwc2025-usa",
+      "slug": "cwc2025-usa",
+      "name": "USA Fan Community — Club WC 2025",
+      "country_code": "USA",
+      "event_id": "event-cwc2025",
+      "language": "en-US",
+      "rtl": false,
+      "moderator_ids": ["user-moderator-1"],
+      "member_count": 800,
+      "status": "active"
+    },
+    {
+      "id": "community-id-rtl-test",
+      "slug": "rtl-arabic-test",
+      "name": "مجتمع المشجعين - اختبار",
+      "country_code": "SAU",
+      "event_id": "event-cwc2025",
+      "language": "ar",
+      "rtl": true,
+      "moderator_ids": ["user-moderator-2"],
+      "member_count": 200,
+      "status": "active"
+    }
+  ]
+}
