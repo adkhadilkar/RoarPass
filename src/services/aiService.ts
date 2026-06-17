@@ -1,5 +1,3 @@
-import { Event } from '../models/Event';
-import { CommunityTrip } from '../models/CommunityTrip';
 import { FanProfile } from '../models/FanProfile';
 
 export interface AiServiceConfig {
