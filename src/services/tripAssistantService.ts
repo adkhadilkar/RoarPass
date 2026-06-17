@@ -51,7 +51,7 @@ function buildTripPrompt(req: TripAssistantRequest): string {
   ].join('\n');
 }
 
-function parseTripSuggestion(raw: string): TripAssistantSuggestion {
+export function parseTripSuggestion(raw: string): TripAssistantSuggestion {
   // Defensive parse; provider output treated as untrusted data.
   try {
     const parsed = JSON.parse(raw);
