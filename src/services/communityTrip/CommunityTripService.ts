@@ -1,7 +1,6 @@
 import { Event } from '../../models/Event';
 import { CountryCommunity } from '../../models/CountryCommunity';
 import { FanProfile } from '../../models/FanProfile';
-import { LocalHelper } from '../../models/LocalHelper';
 import { CommunityTrip, TripLeg, TripParticipant } from '../../models/CommunityTrip';
 import { IntercityCoordinator } from './IntercityCoordinator';
 
