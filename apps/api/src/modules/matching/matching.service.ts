@@ -391,16 +391,26 @@ export class MatchingService {
 
     const suggestions: MatchSuggestion[] = [];
 
-    for (const c of candidates) {
-      // Upsert: if a suggestion for this pair already exists and is PENDING, reuse it
-      let entity = await this.suggRepo.findOne({
+    const candidateIds = candidates.map(c => c.candidateId);
+    let existingSuggestionsMap = new Map<string, MatchSuggestionEntity>();
+
+    if (candidateIds.length > 0) {
+      const existingEntities = await this.suggRepo.find({
         where: {
           viewerId: viewerUserId,
-          targetId: c.candidateId,
-          eventId,
+          eventId: eventId,
           status: MatchStatus.PENDING,
+          targetId: In(candidateIds),
         },
       });
+      for (const entity of existingEntities) {
+        existingSuggestionsMap.set(entity.targetId, entity);
+      }
+    }
+
+    for (const c of candidates) {
+      // Upsert: if a suggestion for this pair already exists and is PENDING, reuse it
+      let entity = existingSuggestionsMap.get(c.candidateId);
 
       if (!entity) {
         entity = this.suggRepo.create({
