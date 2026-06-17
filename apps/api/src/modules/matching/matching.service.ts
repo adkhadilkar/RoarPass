@@ -346,21 +346,47 @@ export class MatchingService {
     viewer: FanMatchProfileEntity,
     candidate: FanMatchProfileEntity,
   ): string[] {
+    const vDates = viewer.travelDates;
+    const cDates = candidate.travelDates;
+    if (!vDates || vDates.length === 0 || !cDates || cDates.length === 0) {
+      return [];
+    }
+
     const overlapping: string[] = [];
-    for (const vPeriod of viewer.travelDates ?? []) {
-      for (const cPeriod of candidate.travelDates ?? []) {
-        if (vPeriod.cityId !== cPeriod.cityId) continue;
-        const vStart = new Date(vPeriod.arrivalDate).getTime();
-        const vEnd = new Date(vPeriod.departureDate).getTime();
-        const cStart = new Date(cPeriod.arrivalDate).getTime();
-        const cEnd = new Date(cPeriod.departureDate).getTime();
-        const overlapStart = Math.max(vStart, cStart);
-        const overlapEnd = Math.min(vEnd, cEnd);
+
+    // Index viewer travel dates by cityId for O(1) lookup
+    const vPeriodsByCity = new Map<string, { start: number; end: number }[]>();
+    for (const vPeriod of vDates) {
+      let cityPeriods = vPeriodsByCity.get(vPeriod.cityId);
+      if (!cityPeriods) {
+        cityPeriods = [];
+        vPeriodsByCity.set(vPeriod.cityId, cityPeriods);
+      }
+      cityPeriods.push({
+        start: new Date(vPeriod.arrivalDate).getTime(),
+        end: new Date(vPeriod.departureDate).getTime(),
+      });
+    }
+
+    for (const cPeriod of cDates) {
+      const vPeriods = vPeriodsByCity.get(cPeriod.cityId);
+      if (!vPeriods) continue;
+
+      const cStart = new Date(cPeriod.arrivalDate).getTime();
+      const cEnd = new Date(cPeriod.departureDate).getTime();
+
+      for (const vPeriod of vPeriods) {
+        const overlapStart = Math.max(vPeriod.start, cStart);
+        const overlapEnd = Math.min(vPeriod.end, cEnd);
         if (overlapEnd >= overlapStart) {
           // Generate daily dates in overlap window
           const dayMs = 86400000;
           for (let t = overlapStart; t <= overlapEnd; t += dayMs) {
-            overlapping.push(new Date(t).toISOString().split('T')[0]);
+            const dt = new Date(t);
+            const yyyy = dt.getUTCFullYear();
+            const mm = String(dt.getUTCMonth() + 1).padStart(2, '0');
+            const dd = String(dt.getUTCDate()).padStart(2, '0');
+            overlapping.push(`${yyyy}-${mm}-${dd}`);
           }
         }
       }
