@@ -43,46 +43,106 @@ export class HelperNetworkService {
       limit = 20,
     } = query;
 
+    const fan = await this.getFanProfile(fanProfileId);
+    await this.validateEvent(eventId);
+
+    const community = await this.getCommunity(destinationCountry);
+    if (!community) {
+      return [];
+    }
+
+    const trip = await this.getTrip(tripId, eventId);
+    const desiredLanguages = this.getDesiredLanguages(languages, fan);
+
+    const helpers = await this.getAvailableHelpers(
+      community,
+      desiredLanguages,
+      trip,
+    );
+
+    return this.scoreAndSortHelpers(
+      helpers,
+      community,
+      desiredLanguages,
+      trip,
+      limit,
+    );
+  }
+
+  private async getFanProfile(fanProfileId: string): Promise<FanProfile> {
     const fan = await db.fanProfiles.findById(fanProfileId);
     if (!fan) {
       throw new Error(`FanProfile not found: ${fanProfileId}`);
     }
+    return fan;
+  }
 
+  private async validateEvent(eventId: string): Promise<Event> {
     const event = await db.events.findById(eventId);
     if (!event) {
       throw new Error(`Event not found: ${eventId}`);
     }
+    return event;
+  }
 
+  private async getCommunity(
+    destinationCountry: string,
+  ): Promise<CountryCommunity | null> {
     const community = await db.countryCommunities.findByCountry(
       destinationCountry,
     );
     if (!community) {
-      logger.info('No CountryCommunity for destination', { destinationCountry });
-      return [];
+      logger.info('No CountryCommunity for destination', {
+        destinationCountry,
+      });
+      return null;
     }
+    return community;
+  }
 
-    let trip: CommunityTrip | null = null;
-    if (tripId) {
-      trip = await db.communityTrips.findById(tripId);
-      if (trip && trip.eventId !== eventId) {
-        throw new Error(
-          `CommunityTrip ${tripId} does not belong to Event ${eventId}`,
-        );
-      }
+  private async getTrip(
+    tripId: string | undefined,
+    eventId: string,
+  ): Promise<CommunityTrip | null> {
+    if (!tripId) {
+      return null;
     }
+    const trip = await db.communityTrips.findById(tripId);
+    if (trip && trip.eventId !== eventId) {
+      throw new Error(
+        `CommunityTrip ${tripId} does not belong to Event ${eventId}`,
+      );
+    }
+    return trip;
+  }
 
-    // Prefer languages explicitly requested, else fall back to the fan's
-    // profile languages so RTL/i18n preferences are honored end-to-end.
-    const desiredLanguages =
-      languages && languages.length > 0 ? languages : fan.languages ?? [];
+  private getDesiredLanguages(
+    languages: string[] | undefined,
+    fan: FanProfile,
+  ): string[] {
+    return languages && languages.length > 0 ? languages : fan.languages ?? [];
+  }
 
-    const helpers = await db.localHelpers.findAvailable({
+  private async getAvailableHelpers(
+    community: CountryCommunity,
+    desiredLanguages: string[],
+    trip: CommunityTrip | null,
+  ): Promise<LocalHelper[]> {
+    return db.localHelpers.findAvailable({
       communityId: community.id,
       languages: desiredLanguages,
       window: trip ? { start: trip.startDate, end: trip.endDate } : undefined,
     });
+  }
 
-    const matches = helpers
+  private scoreAndSortHelpers(
+    helpers: LocalHelper[],
+    community: CountryCommunity,
+    desiredLanguages: string[],
+    trip: CommunityTrip | null,
+    limit: number,
+  ): HelperMatch[] {
+    return helpers
       .map((helper) => ({
         helper,
         community,
@@ -91,8 +151,6 @@ export class HelperNetworkService {
       .filter((m) => m.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
-
-    return matches;
   }
 
   /**
@@ -107,7 +165,7 @@ export class HelperNetworkService {
     let score = 1;
 
     if (desiredLanguages.length > 0) {
-      const overlap = helper.languages.filter((l) =>
+      const overlap = helper.languages.filter((l: string) =>
         desiredLanguages.includes(l),
       ).length;
       if (overlap === 0) {
