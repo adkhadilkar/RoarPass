@@ -5,6 +5,22 @@ import { LocalHelper } from '../../models/LocalHelper';
 import { CommunityTrip, TripLeg, TripParticipant } from '../../models/CommunityTrip';
 import { IntercityCoordinator } from './IntercityCoordinator';
 
+export function extractHelperAssignments(legs: TripLeg[]): Map<string, LocalHelper | null> {
+  return new Map(legs.map((l) => [l.waypointCity, l.assignedHelper]));
+}
+
+export function restoreHelperAssignments(
+  recomputedLegs: TripLeg[],
+  previousAssignments: Map<string, LocalHelper | null>,
+): void {
+  for (const leg of recomputedLegs) {
+    if (!leg.assignedHelper && previousAssignments.has(leg.waypointCity)) {
+      const prevHelper = previousAssignments.get(leg.waypointCity);
+      if (prevHelper) leg.assignHelper(prevHelper);
+    }
+  }
+}
+
 /**
  * Merged service combining base Community Trip lifecycle (from main)
  * with intercity-coordination capabilities (from feat/intercity-coordination).
@@ -71,17 +87,11 @@ export class CommunityTripService {
     trip: CommunityTrip,
     event: Event,
   ): Promise<TripLeg[]> {
-    const previous = new Map(
-      trip.legs.map((l) => [l.waypointCity, l.assignedHelper]),
-    );
+    const previous = extractHelperAssignments(trip.legs);
     const recomputed = await this.planIntercityLegs(trip, event);
 
-    for (const leg of recomputed) {
-      if (!leg.assignedHelper && previous.has(leg.waypointCity)) {
-        const prevHelper = previous.get(leg.waypointCity);
-        if (prevHelper) leg.assignHelper(prevHelper);
-      }
-    }
+    restoreHelperAssignments(recomputed, previous);
+
     return recomputed;
   }
 }
