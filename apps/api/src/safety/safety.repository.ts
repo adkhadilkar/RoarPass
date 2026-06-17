@@ -437,10 +437,19 @@ export class SafetyRepository {
     metadata: Record<string, unknown>,
   ): Promise<void> {
     // Ensure no PII fields are included in metadata
-    const sanitized = { ...metadata };
-    const PII_KEYS = ['email', 'phone', 'name', 'description', 'message', 'reason', 'note'];
-    for (const key of PII_KEYS) {
-      if (key in sanitized) delete sanitized[key];
+    const sanitized: Record<string, unknown> = {};
+    for (const key in metadata) {
+      if (
+        key !== 'email' &&
+        key !== 'phone' &&
+        key !== 'name' &&
+        key !== 'description' &&
+        key !== 'message' &&
+        key !== 'reason' &&
+        key !== 'note'
+      ) {
+        sanitized[key] = metadata[key];
+      }
     }
     await this.pool.query(
       `INSERT INTO safety_audit_log (log_id, entity_type, entity_id, actor_user_id, action, metadata, created_at)
