@@ -1,5 +1,5 @@
-import { Server as HTTPServer } from 'http';
-import { Server as SocketIOServer, Socket } from 'socket.io';
+import type { Server as HTTPServer } from 'http';
+import { type Server as SocketIOServer, type Socket } from 'socket.io';
 import { verifyAccessToken } from '../auth/tokenService';
 import { registerMessagingHandlers } from './handlers/messagingHandlers';
 import { registerPresenceHandlers } from './handlers/presenceHandlers';
