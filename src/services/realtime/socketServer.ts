@@ -23,10 +23,15 @@ declare module 'socket.io' {
  * mounts both handler groups onto the same namespace.
  */
 export function createRealtimeServer(httpServer: HTTPServer): SocketIOServer {
+  const corsOrigins =
+    process.env.REALTIME_CORS_ORIGINS?.split(',')
+      .map((s) => s.trim())
+      .filter(Boolean) ?? [];
+
   const io = new SocketIOServer(httpServer, {
     path: '/realtime',
     cors: {
-      origin: process.env.REALTIME_CORS_ORIGINS?.split(',') ?? [],
+      origin: corsOrigins.length > 0 ? corsOrigins : false,
       credentials: true,
     },
     // messaging chunk requires larger buffer for media metadata payloads
