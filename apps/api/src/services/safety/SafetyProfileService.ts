@@ -3,7 +3,6 @@ import {
   SafetyProfile,
   UpsertSafetyProfileInput,
 } from '@roarpass/shared/types/safety';
-import { v4 as uuidv4 } from 'uuid';
 
 export class SafetyProfileService {
   async getOrCreate(userId: string): Promise<SafetyProfile> {
