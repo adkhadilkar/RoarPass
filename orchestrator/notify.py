@@ -14,7 +14,6 @@ dependency.
 """
 from __future__ import annotations
 import os
-import json
 import urllib.request
 
 _BASE = os.environ.get("NTFY_SERVER", "https://ntfy.sh")
