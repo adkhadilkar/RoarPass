@@ -2,14 +2,14 @@
  * Locale & RTL utility helpers — shared across web and mobile.
  */
 
-import { type SupportedLocale, RTL_LOCALES, LOCALE_CONFIGS, type LocaleConfig, type TextDirection } from '../types/platform-foundation';
+import { RTL_LOCALES, LOCALE_CONFIGS, type LocaleConfig, type TextDirection } from '../types/platform-foundation';
 
 /**
  * Determine text direction from any BCP-47 locale tag.
  * Gracefully handles region variants like 'ar-SA', 'he-IL', 'ur-PK'.
  */
 export function getDirectionForLocale(locale: string): TextDirection {
-  const base = locale.split('-')[0].toLowerCase() as SupportedLocale;
+  const base = locale.split('-')[0].toLowerCase() as keyof typeof LOCALE_CONFIGS;
   return RTL_LOCALES.has(base) ? 'rtl' : 'ltr';
 }
 
@@ -17,7 +17,7 @@ export function getDirectionForLocale(locale: string): TextDirection {
  * Return the `LocaleConfig` for a given locale string, falling back to English.
  */
 export function getLocaleConfig(locale: string): LocaleConfig {
-  const base = locale.split('-')[0].toLowerCase() as SupportedLocale;
+  const base = locale.split('-')[0].toLowerCase() as keyof typeof LOCALE_CONFIGS;
   return LOCALE_CONFIGS[base] ?? LOCALE_CONFIGS['en'];
 }
 
