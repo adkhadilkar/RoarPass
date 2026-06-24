@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In, Not } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable, Logger } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, In, Not } from "typeorm";
+import { v4 as uuidv4 } from "uuid";
 import {
   MatchType,
   VisibilityLevel,
@@ -11,26 +11,26 @@ import {
   MatchQueryParams,
   FanMatchProfile,
   BlockedUsersContract,
-} from '@roarpass/shared';
-import { DiscoveryPreferenceEntity } from './entities/discovery-preference.entity';
-import { MatchSuggestionEntity } from './entities/match-suggestion.entity';
-import { FanMatchProfileEntity } from './entities/fan-match-profile.entity';
-import { SafetyTrustService } from '../safety/safety-trust.service';
+} from "@roarpass/shared";
+import { DiscoveryPreferenceEntity } from "./entities/discovery-preference.entity";
+import { MatchSuggestionEntity } from "./entities/match-suggestion.entity";
+import { FanMatchProfileEntity } from "./entities/fan-match-profile.entity";
+import { SafetyTrustService } from "../safety/safety-trust.service";
 
 // ---------------------------------------------------------------------------
 // Scoring weights (sum must equal 1.0)
 // ---------------------------------------------------------------------------
 const WEIGHTS = {
-  cityOverlap: 0.30,
-  dateOverlap: 0.20,
-  languageMatch: 0.20,
-  routeMatch: 0.10,
-  matchInterestAlignment: 0.10,
+  cityOverlap: 0.3,
+  dateOverlap: 0.2,
+  languageMatch: 0.2,
+  routeMatch: 0.1,
+  matchInterestAlignment: 0.1,
   communityBonus: 0.05,
   helperTrustBonus: 0.05,
 } as const;
 
-const SCORE_THRESHOLD = 0.15;        // minimum score to surface a suggestion
+const SCORE_THRESHOLD = 0.15; // minimum score to surface a suggestion
 const MAX_CANDIDATES_PER_EVENT = 500; // performance guard — prevents unbounded scans
 const SUGGESTION_TTL_HOURS = 48;
 
@@ -63,7 +63,10 @@ export class MatchingService {
     const viewerPrefs = await this.getDiscoveryPreferences(viewerUserId);
 
     // 2. Load exclusion lists from safety-trust-system (HIGH PRIORITY — before any other work)
-    const excludedIds = await this.safetyTrust.getExcludedUserIds(viewerUserId, eventId);
+    const excludedIds = await this.safetyTrust.getExcludedUserIds(
+      viewerUserId,
+      eventId,
+    );
 
     // 3. Load candidate profiles (capped to MAX_CANDIDATES_PER_EVENT for perf)
     const candidates = await this.loadCandidates(
@@ -86,12 +89,18 @@ export class MatchingService {
     const paginated = scored.slice(offset, offset + limit);
 
     // 6. Persist suggestions (upsert)
-    const suggestions = await this.persistSuggestions(viewerUserId, paginated, eventId);
+    const suggestions = await this.persistSuggestions(
+      viewerUserId,
+      paginated,
+      eventId,
+    );
 
     return { suggestions, total };
   }
 
-  async getDiscoveryPreferences(userId: string): Promise<DiscoveryPreferenceEntity> {
+  async getDiscoveryPreferences(
+    userId: string,
+  ): Promise<DiscoveryPreferenceEntity> {
     let prefs = await this.prefRepo.findOne({ where: { userId } });
     if (!prefs) {
       prefs = this.prefRepo.create({
@@ -113,7 +122,7 @@ export class MatchingService {
 
   async updateDiscoveryPreferences(
     userId: string,
-    updates: Partial<Omit<DiscoveryPreferenceEntity, 'userId' | 'updatedAt'>>,
+    updates: Partial<Omit<DiscoveryPreferenceEntity, "userId" | "updatedAt">>,
   ): Promise<DiscoveryPreferenceEntity> {
     const prefs = await this.getDiscoveryPreferences(userId);
     Object.assign(prefs, updates);
@@ -130,7 +139,7 @@ export class MatchingService {
       where: { id: suggestionId, viewerId: viewerUserId },
     });
     if (!suggestion) {
-      throw new Error('Suggestion not found or not owned by user');
+      throw new Error("Suggestion not found or not owned by user");
     }
     suggestion.status = status;
     suggestion.respondedAt = new Date();
@@ -141,10 +150,17 @@ export class MatchingService {
   // Internal helpers
   // -------------------------------------------------------------------------
 
-  private async getViewerProfile(userId: string, eventId: string): Promise<FanMatchProfileEntity> {
-    const profile = await this.profileRepo.findOne({ where: { userId, eventId } });
+  private async getViewerProfile(
+    userId: string,
+    eventId: string,
+  ): Promise<FanMatchProfileEntity> {
+    const profile = await this.profileRepo.findOne({
+      where: { userId, eventId },
+    });
     if (!profile) {
-      throw new Error(`Fan match profile not found for user ${userId} event ${eventId}`);
+      throw new Error(
+        `Fan match profile not found for user ${userId} event ${eventId}`,
+      );
     }
     return profile;
   }
@@ -166,32 +182,34 @@ export class MatchingService {
     languageCode?: string,
   ): Promise<FanMatchProfileEntity[]> {
     const qb = this.profileRepo
-      .createQueryBuilder('p')
-      .where('p.eventId = :eventId', { eventId })
-      .andWhere('p.userId != :viewerUserId', { viewerUserId })
-      .andWhere('p.discoverability != :hidden', { hidden: VisibilityLevel.HIDDEN })
+      .createQueryBuilder("p")
+      .where("p.eventId = :eventId", { eventId })
+      .andWhere("p.userId != :viewerUserId", { viewerUserId })
+      .andWhere("p.discoverability != :hidden", {
+        hidden: VisibilityLevel.HIDDEN,
+      })
       .take(MAX_CANDIDATES_PER_EVENT);
 
     // Filter out blocked/flagged users via NOT IN — excludedIds expected to be small (<1000)
     if (excludedIds.size > 0) {
-      qb.andWhere('p.userId NOT IN (:...excludedIds)', {
+      qb.andWhere("p.userId NOT IN (:...excludedIds)", {
         excludedIds: Array.from(excludedIds),
       });
     }
 
     if (matchType === MatchType.FAN_TO_HELPER) {
-      qb.andWhere('p.isHelper = true');
+      qb.andWhere("p.isHelper = true");
     } else if (matchType === MatchType.FAN_TO_FAN) {
-      qb.andWhere('p.isHelper = false');
+      qb.andWhere("p.isHelper = false");
     }
 
     if (cityId) {
       // cities are stored as JSON array; use JSON_CONTAINS for MySQL or @> for PG
-      qb.andWhere(':cityId = ANY(p.citiesAttending)', { cityId });
+      qb.andWhere(":cityId = ANY(p.citiesAttending)", { cityId });
     }
 
     if (languageCode) {
-      qb.andWhere(':languageCode = ANY(p.languagesSpoken)', { languageCode });
+      qb.andWhere(":languageCode = ANY(p.languagesSpoken)", { languageCode });
     }
 
     return qb.getMany();
@@ -212,7 +230,10 @@ export class MatchingService {
     const dateOverlap = this.computeDateOverlap(viewer, candidate);
     const languageMatch = this.computeLanguageMatch(viewer, candidate);
     const routeMatch = this.computeRouteMatch(viewer, candidate);
-    const matchInterestAlignment = this.computeMatchInterestAlignment(viewer, candidate);
+    const matchInterestAlignment = this.computeMatchInterestAlignment(
+      viewer,
+      candidate,
+    );
     const communityBonus = this.computeCommunityBonus(viewer, candidate);
     const helperTrustBonus = this.computeHelperTrustBonus(candidate);
 
@@ -235,7 +256,9 @@ export class MatchingService {
       (candidate.languagesSpoken ?? []).includes(l),
     );
 
-    const matchType = candidate.isHelper ? MatchType.FAN_TO_HELPER : MatchType.FAN_TO_FAN;
+    const matchType = candidate.isHelper
+      ? MatchType.FAN_TO_HELPER
+      : MatchType.FAN_TO_FAN;
 
     return {
       candidateId: candidate.userId,
@@ -289,8 +312,8 @@ export class MatchingService {
     const vLangs = new Set(viewer.languagesSpoken ?? []);
     const cLangs = new Set(
       candidate.isHelper
-        ? candidate.helperLanguages ?? []
-        : candidate.languagesSpoken ?? [],
+        ? (candidate.helperLanguages ?? [])
+        : (candidate.languagesSpoken ?? []),
     );
     const hasMatch = [...vLangs].some((l) => cLangs.has(l));
     return hasMatch ? 1.0 : 0.0;
@@ -305,7 +328,9 @@ export class MatchingService {
     const candidateRoutes = this.extractRoutes(candidate);
     const vSet = new Set(viewerRoutes);
     const matches = candidateRoutes.filter((r) => vSet.has(r));
-    return matches.length > 0 ? Math.min(1.0, matches.length / viewerRoutes.length) : 0;
+    return matches.length > 0
+      ? Math.min(1.0, matches.length / viewerRoutes.length)
+      : 0;
   }
 
   private computeMatchInterestAlignment(
@@ -360,7 +385,7 @@ export class MatchingService {
           // Generate daily dates in overlap window
           const dayMs = 86400000;
           for (let t = overlapStart; t <= overlapEnd; t += dayMs) {
-            overlapping.push(new Date(t).toISOString().split('T')[0]);
+            overlapping.push(new Date(t).toISOString().split("T")[0]);
           }
         }
       }
@@ -370,7 +395,8 @@ export class MatchingService {
 
   private extractRoutes(profile: FanMatchProfileEntity): string[] {
     const sorted = [...(profile.travelDates ?? [])].sort(
-      (a, b) => new Date(a.arrivalDate).getTime() - new Date(b.arrivalDate).getTime(),
+      (a, b) =>
+        new Date(a.arrivalDate).getTime() - new Date(b.arrivalDate).getTime(),
     );
     const routes: string[] = [];
     for (let i = 0; i < sorted.length - 1; i++) {
@@ -386,21 +412,37 @@ export class MatchingService {
     candidates: MatchCandidate[],
     eventId: string,
   ): Promise<MatchSuggestion[]> {
-    const now = new Date();
-    const expiresAt = new Date(now.getTime() + SUGGESTION_TTL_HOURS * 3600 * 1000);
+    if (candidates.length === 0) {
+      return [];
+    }
 
-    const suggestions: MatchSuggestion[] = [];
+    const now = new Date();
+    const expiresAt = new Date(
+      now.getTime() + SUGGESTION_TTL_HOURS * 3600 * 1000,
+    );
+
+    const candidateIds = candidates.map((c) => c.candidateId);
+
+    // Batch fetch existing pending suggestions for this viewer/event and these candidates
+    const existingEntities = await this.suggRepo.find({
+      where: {
+        viewerId: viewerUserId,
+        targetId: In(candidateIds),
+        eventId,
+        status: MatchStatus.PENDING,
+      },
+    });
+
+    const existingMap = new Map<string, MatchSuggestionEntity>();
+    for (const entity of existingEntities) {
+      existingMap.set(entity.targetId, entity);
+    }
+
+    const entitiesToSave: MatchSuggestionEntity[] = [];
 
     for (const c of candidates) {
       // Upsert: if a suggestion for this pair already exists and is PENDING, reuse it
-      let entity = await this.suggRepo.findOne({
-        where: {
-          viewerId: viewerUserId,
-          targetId: c.candidateId,
-          eventId,
-          status: MatchStatus.PENDING,
-        },
-      });
+      let entity = existingMap.get(c.candidateId);
 
       if (!entity) {
         entity = this.suggRepo.create({
@@ -423,8 +465,13 @@ export class MatchingService {
         entity.expiresAt = expiresAt;
       }
 
-      const saved = await this.suggRepo.save(entity);
+      entitiesToSave.push(entity);
+    }
 
+    const savedEntities = await this.suggRepo.save(entitiesToSave);
+    const suggestions: MatchSuggestion[] = [];
+
+    for (const saved of savedEntities) {
       suggestions.push({
         suggestionId: saved.id,
         matchType: saved.matchType as MatchType,
