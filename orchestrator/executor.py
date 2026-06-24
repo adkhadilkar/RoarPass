@@ -141,7 +141,6 @@ def _run_step(kind, step, pid, plan_vars):
     elif kind == "gate":
         gid = step.get("gate_id", f"phase{pid}")
         # if this gate was already approved (resume), skip it
-        import os as _os
         approved = gate.read_decision()
         cleared_gates = _PLAN_RUNTIME.setdefault("passed_gates", set())
         if gid in cleared_gates or (approved and approved.get("approved")
