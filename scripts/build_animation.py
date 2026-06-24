@@ -16,7 +16,6 @@ Rendering uses Pillow (pure-Python, no browser needed). MP4 needs ffmpeg on PATH
 Usage: python scripts/build_animation.py [--log state/run_log.jsonl] [--out ../roarpass/demo]
 """
 from __future__ import annotations
-import sys
 import json
 import math
 import pathlib
