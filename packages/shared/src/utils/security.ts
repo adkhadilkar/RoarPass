@@ -3,8 +3,6 @@
  * NO secrets are stored here; only validation and sanitisation helpers.
  */
 
-import { type JwtClaims, type SecurityRole } from '../types/platform-foundation';
-
 /**
  * Check if a set of JWT claims contains a required role.
  * Used in middleware and API route guards.
