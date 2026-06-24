@@ -17,7 +17,6 @@ Everything else — including whether gates exist and where — is the planner's
 from __future__ import annotations
 import json
 import os
-import re
 import pathlib
 
 from . import agent, fanout, git_ops, gate, runlog, notify
