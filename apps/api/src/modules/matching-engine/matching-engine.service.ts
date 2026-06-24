@@ -138,19 +138,21 @@ export class MatchingEngineService {
       viewerProfile,
     );
 
-    const scoredCards: DiscoveryCard[] = [];
+    const cardPromises: Promise<DiscoveryCard | null>[] = [];
 
     for (const candidate of candidates) {
       const signals = this.computeSignals(viewerProfile, candidate);
       if (signals.length === 0) continue;
 
       const compositeScore = this.computeCompositeScore(signals);
-      const card = await this.buildDiscoveryCard(
-        candidate,
-        signals,
-        compositeScore,
-        query,
+      cardPromises.push(
+        this.buildDiscoveryCard(candidate, signals, compositeScore, query),
       );
+    }
+
+    const cards = await Promise.all(cardPromises);
+    const scoredCards: DiscoveryCard[] = [];
+    for (const card of cards) {
       if (card) scoredCards.push(card);
     }
 
