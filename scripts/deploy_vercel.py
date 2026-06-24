@@ -20,7 +20,6 @@ WHAT IT DOES NOT DO (prohibited / requires you):
 Usage: python scripts/deploy_vercel.py [--product ../roarpass]
 """
 from __future__ import annotations
-import sys
 import json
 import argparse
 import pathlib
