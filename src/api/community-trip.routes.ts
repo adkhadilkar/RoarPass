@@ -16,9 +16,9 @@ import {
 const router = Router();
 
 // --- Community Trip core (previously merged) ---
-router.get('/trips', tripController.listTrips);
+router.get('/trips', requireAuth, tripController.listTrips);
 router.post('/trips', requireAuth, validateBody(createTripSchema), tripController.createTrip);
-router.get('/trips/:tripId', tripController.getTrip);
+router.get('/trips/:tripId', requireAuth, tripController.getTrip);
 router.patch(
   '/trips/:tripId',
   requireAuth,
@@ -28,7 +28,7 @@ router.patch(
 router.delete('/trips/:tripId', requireAuth, tripController.deleteTrip);
 
 // --- Trip Itinerary (trip-itinerary chunk) ---
-router.get('/trips/:tripId/itinerary', itineraryController.getItinerary);
+router.get('/trips/:tripId/itinerary', requireAuth, itineraryController.getItinerary);
 router.put(
   '/trips/:tripId/itinerary',
   requireAuth,
