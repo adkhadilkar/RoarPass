@@ -5,7 +5,6 @@ Billing: uses ANTHROPIC_API_KEY from the environment. Never logs or stores the k
 Model routing: resolved from config/models.yaml by role name.
 """
 from __future__ import annotations
-import os
 import re
 import time
 import pathlib
