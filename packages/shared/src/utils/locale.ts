@@ -2,7 +2,7 @@
  * Locale & RTL utility helpers — shared across web and mobile.
  */
 
-import { type SupportedLocale, RTL_LOCALES, LOCALE_CONFIGS, type LocaleConfig, type TextDirection } from '../types/platform-foundation';
+import { RTL_LOCALES, LOCALE_CONFIGS, type LocaleConfig, type TextDirection } from '../types/platform-foundation';
 
 /**
  * Determine text direction from any BCP-47 locale tag.
